@@ -86,7 +86,7 @@ public class Player_controller : MonoBehaviour {
 			    break;
             case (player_state.attack):
                 //Debug.Log("case");
-                attack(6, objs[0]);
+                attack(2, objs[0]);
                 state = player_state.nothing;
                // Debug.Log(state);
 			    break;
@@ -179,7 +179,7 @@ public class Player_controller : MonoBehaviour {
                 SendMessage("big_bomb", person);
                 break;
             case (2):
-                SendMessage("elasdtic_bomb", person);
+                SendMessage("move_bomb", person);
                 break;
             case (3):
                 SendMessage("time_bomb", person);

@@ -9,6 +9,7 @@ public class small_bomb_explosion : MonoBehaviour {
 	private HPController[]  healths;
 	private float[] distance ;
     bool can_explosion = false;
+    bool after_shoot = false;
 
 
 	// Use this for initialization

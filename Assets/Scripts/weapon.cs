@@ -15,6 +15,7 @@ public class weapon : MonoBehaviour {
 	Vector3 now_position;  //判断是否出去大圆
 	bool can_move = false; 
     bool can_attack = true;
+    bool in_sky = false;
 	//bool can_rot = false;
 	//bool on_land = true;
 
@@ -30,20 +31,20 @@ public class weapon : MonoBehaviour {
 
 	public GameObject Bird;//轰炸机
 	public GameObject Egg;//轰炸机上的炸弹
-	private float length;
-	private float bird_speed;
+	//private float length;
+    private float bird_speed = 2.0f;
 	private bool can_layeggs = false ;
 
 	public GameObject SmallBomb;
 	public GameObject BigBomb;
 	public GameObject TimeBomb;
-	public GameObject ElasticBomb;
+	public GameObject MoveBomb;
 	public GameObject Cannon;
 	public GameObject Lightning;
 	public GameObject Tsunami;
 	public GameObject CannonBomb;
 
-   
+    private float totaltime = 0.0f;
 
 
 	void Start () {
@@ -51,12 +52,13 @@ public class weapon : MonoBehaviour {
         screen_height = Screen.height;
         map_width = mini_map.transform.position.x * 2;
         map_height = (screen_height - mini_map.transform.position.y) * 2;
-		length = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, 0, 0)).x;
+//		length = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, 0, 0)).x;
 		end_position = control_in.transform.position;
         SmallBomb.SetActive(false);
         BigBomb.SetActive(false);
         Cannon.SetActive(false);
-        Box.SetActive(false);
+        Bird.SetActive (false);
+        MoveBomb.SetActive(false);
 	}
 	
 	// Update is called once per frame
@@ -99,6 +101,7 @@ public class weapon : MonoBehaviour {
         if (Input.GetMouseButtonUp (0)&& can_move == true ) {
 			can_move = false;
             can_attack = true;
+            //in_sky = true;
 			//Debug.Log ("here");
 			//can_rot = true;
 			//on_land = false;
@@ -140,41 +143,58 @@ public class weapon : MonoBehaviour {
 
 
 	void box(){
-        if (Input.GetMouseButtonDown (0) && !(Input.mousePosition.x >= 0 && Input.mousePosition.x <= map_width && Input.mousePosition.y <= screen_height && Input.mousePosition.y >= screen_height - map_height)) {
-            Debug.Log("box");
-            Vector3 mousePosition = Camera.main.ScreenToWorldPoint (Input.mousePosition);
-            mousePosition.y += 1;
-            mousePosition.z = 1;
-            Box.transform.rotation = Quaternion.identity; 
-            Box.SetActive(true);
-			Box.transform.position = mousePosition;
-		}
+        if (can_attack == true)
+        {
+            if (Input.GetMouseButtonDown(0) && !(Input.mousePosition.x >= 0 && Input.mousePosition.x <= map_width && Input.mousePosition.y <= screen_height && Input.mousePosition.y >= screen_height - map_height))
+            {
+                Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                mousePosition.y += 1;
+                mousePosition.z = 1;
+                GameObject box_obj = Instantiate(Box, mousePosition, Quaternion.identity);
+                can_attack = false;
+            }
+        }
+       
 	}
 	void drum(){
-		if (Input.GetMouseButtonDown (0)) {
-			Vector3 mousePosition = Camera.main.ScreenToWorldPoint (Input.mousePosition);
-			GameObject drum_obj = Instantiate (Drum) as GameObject;
-			drum_obj.transform.position = mousePosition;
-		}
+        if (can_attack == true)
+        {
+            if (Input.GetMouseButtonDown(0) && !(Input.mousePosition.x >= 0 && Input.mousePosition.x <= map_width && Input.mousePosition.y <= screen_height && Input.mousePosition.y >= screen_height - map_height))
+            {
+                Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                mousePosition.y += 1;
+                mousePosition.z = 1;
+                GameObject drum_obj = Instantiate(Drum, mousePosition, Quaternion.identity);
+                can_attack = false;
+            }
+        }
 	}
 	void bird_egg(){
-		GameObject bird_obj = Instantiate(Bird) as GameObject;
-		bird_obj.SetActive (false);
+		//GameObject bird_obj = Instantiate(Bird) as GameObject;
+        //totaltime += Time.deltaTime;
 		if (Input.GetMouseButtonDown(0) && can_layeggs == false)
 		{ 
 			Vector2 mouseTransform = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-			bird_obj.transform.position = new Vector2(-length, mouseTransform.y);
-			bird_obj.GetComponent<Rigidbody2D>().velocity = new Vector2(bird_speed, 0);
-			bird_obj.SetActive (true);
+            Bird.transform.position = new Vector3(-17.0f, mouseTransform.y,1);
+            //Rigidbody2D ri = Bird.GetComponent<Rigidbody2D>();
+            //ri.velocity = new Vector2(2, 0);
+            //ri.AddForce(new Vector2(2.0f,0),ForceMode2D.Impulse);
+            //Debug.Log(Bird.GetComponent<Rigidbody2D>().velocity);
+            Bird.SetActive (true);
 			can_layeggs = true;
 		}
+        if(can_layeggs){
+            Rigidbody2D ri = Bird.GetComponent<Rigidbody2D>();
+            ri.velocity = new Vector2(4, 0);
+            //ri.AddForce(new Vector2(2.0f,0),ForceMode2D.Impulse);
+        }
 		if (Input.GetMouseButtonDown (0) && can_layeggs == true) {
 			GameObject egg_obj = Instantiate (Egg) as GameObject;
-			egg_obj.transform.position = bird_obj.transform.position;
-			egg_obj.GetComponent<Rigidbody2D> ().velocity = bird_obj.GetComponent<Rigidbody2D> ().velocity;
+            egg_obj.transform.position = Bird.transform.position;
+            egg_obj.GetComponent<Rigidbody2D> ().velocity = (Bird.GetComponent<Rigidbody2D> ().velocity) /2;
 		}
-		if (can_layeggs == true && bird_obj.transform.position.x > length + 2)
-			Destroy (bird_obj);
+        if (can_layeggs == true && Bird.transform.position.x > 17.0f)
+            Bird.SetActive (false);
 	}
 	float clamp(float x,float min,float max){
 		if(x > max)
@@ -233,10 +253,82 @@ public class weapon : MonoBehaviour {
         //force (bigbomb_obj);
 		//同上 爆炸威力更大，弹性略大
 	}
-    void elastic_bomb(GameObject person){
-        GameObject elasticbomb_obj = Instantiate(ElasticBomb, person.transform.position, Quaternion.identity);
-        force (elasticbomb_obj);
-		//同上 弹性更大
+    void move_bomb(GameObject person){
+        //GameObject elasticbomb_obj = Instantiate(MoveBomb, person.transform.position, Quaternion.identity);
+        if(can_attack == true){
+            MoveBomb.SetActive(true);
+            MoveBomb.transform.position = person.transform.position;
+        }
+        can_attack = false;      
+        if (in_sky == false)
+        {
+            Rigidbody2D ri = MoveBomb.GetComponent<Rigidbody2D>();
+            Vector2 temp_force = Vector2.zero;
+            begin_posion = control_out.transform.position;
+            // Debug.Log("force");
+            //在固定区域点下
+            if (Input.GetMouseButtonDown(0) && Vector2.Distance(Input.mousePosition, control_in.transform.position) < 25.0f)
+            {
+                Debug.Log("get the mouse");
+                can_move = true;
+            }
+            //推拽 分两种，鼠标在圆内和在圆外
+            if (Input.GetMouseButton(0) && can_move)
+            {
+                //在圆内
+                if (Vector2.Distance(control_in.transform.position, Input.mousePosition) < 25.0f)
+                {
+                    end_position = Input.mousePosition;
+                    control_out.transform.position = end_position;
+                    create_ball(MoveBomb);
+                }
+                else
+                {
+                    float sin = (Input.mousePosition.y - control_in.transform.position.y) / Vector2.Distance(control_in.transform.position, Input.mousePosition);
+                    float cos = (Input.mousePosition.x - control_in.transform.position.x) / Vector2.Distance(control_in.transform.position, Input.mousePosition);
+                    end_position.x = control_in.transform.position.x + 25.0f * cos;
+                    end_position.y = control_in.transform.position.y + 25.0f * sin;
+                    control_out.transform.position = end_position;
+                    create_ball(MoveBomb);
+                }
+            }
+            if (Input.GetMouseButtonUp(0) && can_move == true)
+            {
+                can_move = false;
+                can_attack = true;
+                in_sky = true;
+                //Debug.Log ("here");
+                //can_rot = true;
+                //on_land = false;
+                control_out.transform.position = control_in.transform.position;
+                temp_force = control_in.transform.position;
+                temp_force = temp_force - end_position;
+            }
+            ri.AddForce (temp_force, ForceMode2D.Impulse);
+        }
+        if (in_sky)
+        {
+            //totaltime += Time.deltaTime;
+            if (Input.GetMouseButtonDown (0) && Vector2.Distance (Input.mousePosition, control_in.transform.position) < 25.0f) {
+                can_move = true;
+            }
+            if (Input.GetMouseButton (0) && can_move) {
+                end_position = new Vector2 (50.0f, 50.0f);
+                end_position.x = clamp (Input.mousePosition.x, 25.0f, 75.0f);
+                control_out.transform.position = end_position;
+                Debug.Log(control_out.transform.position);
+                MoveBomb.transform.position = new Vector3 (MoveBomb.transform.position.x + (control_out.transform.position.x - 50.0f) / 400, MoveBomb.transform.position.y , 0);
+            }
+            //松开鼠标 获取力的大小
+            if (Input.GetMouseButtonUp (0)&& can_move ) {
+                can_move = false;
+                //float temp = control_out.transform.position.y - 50.0f;
+                //control_out.transform.position = control_in.transform.position;
+               // GameObject bomb = Instantiate (CannonBomb, Cannon.transform.position, Quaternion.identity);
+               // Rigidbody2D ri_bomb = bomb.GetComponent<Rigidbody2D> ();
+                //ri_bomb.AddForce (new Vector2 (50.0f, 0), ForceMode2D.Impulse);
+            }
+        }
 	}
     void time_bomb(GameObject person){
         GameObject timebomb_obj = Instantiate(TimeBomb, person.transform.position, Quaternion.identity);

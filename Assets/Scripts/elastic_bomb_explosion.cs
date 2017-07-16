@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class elastic_bomb_explosion : MonoBehaviour {
 
-	public GameObject elastic_explosion;
+	public GameObject move_bomb;
+    public GameObject move_explosion;
 	private GameObject[] objs;
 
 	private HPController[]  healths;
 	private float[] distance ;
 	private Rigidbody2D ri;
+    private bool can_explosion = false;
 
 
 	// Use this for initialization
@@ -38,14 +40,19 @@ public class elastic_bomb_explosion : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		if (ri.velocity.y < 0.1f) {
-			exam_distance ();
-			GameObject explosion = Instantiate (elastic_explosion, this.transform.position, Quaternion.identity);
-			Destroy (this);
-			Invoke ("dehealt", 1f);
-			clear ();
-		}
+		
 	}
+    void OnCollisionEnter2D(Collision2D coll){
+        if(coll.gameObject.tag == "barrier" && can_explosion == true){
+            exam_distance();
+            GameObject explosion = Instantiate (move_explosion, this.transform.position, Quaternion.identity);
+            Destroy(explosion, 0.5f);
+            //   Debug.Log("coll");
+            move_bomb.SetActive(false);
+            Invoke ("dehealt", 1f);
+            clear ();
+        }
+    }
 	void  dehealth(){
 		for (int i = 0; i < 10; i++) {
 			if (healths [i].isdeath == false && distance[i] < 5) 
