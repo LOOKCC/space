@@ -48,12 +48,14 @@ public class Player_controller : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        
-
 		if (controller.State == Game_controller.Game_State.Game_Player) {
 			changestate (state);
 		}
 	}
+
+    
+
+
 	void changestate(player_state state){
 		switch(state){
             case (player_state.begin):
@@ -139,34 +141,34 @@ public class Player_controller : MonoBehaviour {
 			}
 			ri.AddForce (temp_force, ForceMode2D.Impulse);
 	}
-		//显示轨迹（略暴力，后期可优化）
-		void create_ball(GameObject hero){
-			Vector2 ball_force;
-			ball_force.x = control_out.transform.position.x - control_in.transform.position.x;
-			ball_force.y = control_out.transform.position.y - control_in.transform.position.y;
-			//ball_ri.AddForce (-ball_force * 20, ForceMode2D.Impulse);
-			for(int i = 0 ;i < 20; i++){
-				GameObject ball_temp = Instantiate (ball, fx(-ball_force*0.7f,0.05f*i,hero), Quaternion.identity) as GameObject;
-				Destroy (ball_temp, 0.05f);
-			}
+	//显示轨迹（略暴力，后期可优化）
+	void create_ball(GameObject hero){
+		Vector2 ball_force;
+		ball_force.x = control_out.transform.position.x - control_in.transform.position.x;
+		ball_force.y = control_out.transform.position.y - control_in.transform.position.y;
+		//ball_ri.AddForce (-ball_force * 20, ForceMode2D.Impulse);
+		for(int i = 0 ;i < 20; i++){
+			GameObject ball_temp = Instantiate (ball, fx(-ball_force*0.7f,0.05f*i,hero), Quaternion.identity) as GameObject;
+			Destroy (ball_temp, 0.05f);
 		}
-		//计算平抛运动的轨迹 y=vt+1/2at^2
-		Vector2 fx(Vector2 speed, float time ,GameObject hero){
-			Vector2 ret = new Vector2 (0, 0);
-			if (speed.x > 0)
-				ret.x = hero.transform.position.x + speed.x * time - 0.5f * 0.3f * time * time;
-			else if (speed.x < 0)
-				ret.x = hero.transform.position.x + speed.x * time + 0.5f * 0.3f * time * time;
-			else
-				ret.x = hero.transform.position.x;
-			ret.y = hero.transform.position.y + speed.y * time - 0.5f * 14f * time * time;
-			return ret;
-		}
-		Vector3 ScreenToWord(Vector3 screen){
-			Vector3 view = camera.ScreenToViewportPoint (screen);
-			Vector3 word = camera.ViewportToWorldPoint (view);
-			return word;
-		}
+	}
+	//计算平抛运动的轨迹 y=vt+1/2at^2
+	Vector2 fx(Vector2 speed, float time ,GameObject hero){
+		Vector2 ret = new Vector2 (0, 0);
+		if (speed.x > 0)
+			ret.x = hero.transform.position.x + speed.x * time - 0.5f * 0.3f * time * time;
+		else if (speed.x < 0)
+			ret.x = hero.transform.position.x + speed.x * time + 0.5f * 0.3f * time * time;
+		else
+			ret.x = hero.transform.position.x;
+		ret.y = hero.transform.position.y + speed.y * time - 0.5f * 14f * time * time;
+		return ret;
+	}
+	Vector3 ScreenToWord(Vector3 screen){
+		Vector3 view = camera.ScreenToViewportPoint (screen);
+		Vector3 word = camera.ViewportToWorldPoint (view);
+		return word;
+	}
 
     void attack(int NO, GameObject person){
         switch (NO)
@@ -204,6 +206,4 @@ public class Player_controller : MonoBehaviour {
                 break;
         }
     }
-
-
 }
