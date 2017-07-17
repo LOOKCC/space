@@ -7,20 +7,21 @@ public class People : MonoBehaviour {
     // 静态变量只会有一个
     public static People instance = new People();
     // 人的数组
-    public static GameObject[] peoples;
+    public GameObject[] peoples;
     // 距离的静态数组
     private static float[] distances = new float[10];
     // 血量数组
     private static HPController[] HPs = new HPController[10];
     // 开始调用的start，获取人物的血条
-    private Slider[] hpSliders;
+    private Slider[] hpSliders = new Slider[10];
     private void Start()
     {
         int index = 0;
         foreach (var person in peoples)
         {
-            HPs[index++] = person.GetComponent<HPController>();
-            hpSliders[i] = person.GetComponent<Slider>();
+            HPs[index] = person.GetComponent<HPController>();
+            hpSliders[index] = person.GetComponentInChildren<Slider>();
+            index++;
 ;        }
     }
     // 其他人调用，返回血条数组
