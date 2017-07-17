@@ -1,12 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class big_bomb_explosion : MonoBehaviour {
 
     public GameObject bigbomb;
 	public GameObject big_explosion;
-	private GameObject[] objs;
 
     //private GameObject explosion;
 
@@ -16,24 +16,8 @@ public class big_bomb_explosion : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		objs = new GameObject[10];
-		healths = new HPController[10];
-		distance = new float[10];
-		clear ();
-
-        objs[0] = GameObject.Find("player1");
-        objs[1] = GameObject.Find("player2");
-        objs[2] = GameObject.Find("player3");
-        objs[3] = GameObject.Find("player4");
-        objs[4] = GameObject.Find("player5");
-        objs[5] = GameObject.Find("enemy1");
-        objs[6] = GameObject.Find("enemy2");
-        objs[7] = GameObject.Find("enemy3");
-        objs[8] = GameObject.Find("enemy4");
-        objs[9] = GameObject.Find("enemy5");
-
-        for(int i = 0; i < 10; i++)
-            healths[i] = objs[i].GetComponent<HPController>();
+		//clear ();
+        healths = People.instance.GetHPs();
         //explosion = Instantiate (big_explosion, this.transform.position, Quaternion.identity);
         //explosion.SetActive(false);
 	}
@@ -44,16 +28,21 @@ public class big_bomb_explosion : MonoBehaviour {
 	}
 	void OnCollisionEnter2D(Collision2D coll){
         if(coll.gameObject.tag == "barrier" && can_explosion){
-
-            exam_distance();
+            //exam_distance();
+            // 获取距离
+            People.instance.GetDistances(this.transform);
             GameObject explosion = Instantiate (big_explosion, this.transform.position, Quaternion.identity);
             Destroy(explosion, 0.5f);
             //Debug.Log("coll");
             bigbomb.SetActive(false);
             Invoke("disappear", 1.0f);
-           // Invoke ("disappear" ,1.0f);
-			Invoke ("dehealt", 2f);
-			clear ();
+            // Invoke ("disappear" ,1.0f);
+            //Invoke ("dehealt", 2f);
+            // 休眠2s
+            Thread.Sleep(2000);
+            // 减血
+            People.instance.DecraseHealth(4.0f, 1);
+			//clear ();
 		}
 	}
     /*
@@ -68,22 +57,5 @@ public class big_bomb_explosion : MonoBehaviour {
         if(coll.gameObject.tag == "barrier" )
             can_explosion = true;
     }
-
-	void  dehealth(){
-		for (int i = 0; i < 10; i++) {
-			if (healths [i].isdeath == false && distance[i] < 4) 
-				healths [i].health -= 1.0f / (distance[i] * distance[i] + 0.1f);
-		}
-	}
-	void exam_distance(){
-		for(int i = 0; i < 10; i++) 
-			distance[i] = (this.transform.position - objs [i].transform.position).magnitude;
-	}
-	void clear()
-	{
-		for (int i = 0; i < 10; i++)
-			distance [i] = 0.0f;
-	}
-
 }
 	

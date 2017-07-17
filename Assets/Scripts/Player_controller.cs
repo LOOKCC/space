@@ -11,8 +11,8 @@ public class Player_controller : MonoBehaviour {
 
 	public GameObject control_in; 
 	public GameObject control_out;
-	public Camera camera;//主摄像机
-	public GameObject ball; //轨迹用小球
+    public new Camera camera;//主摄像机
+    public GameObject ball; //轨迹用小球
 	Vector2 begin_posion;//开始的位置
 	Vector2 end_position; //结束的位置  结束指向开始作为力
 	Vector3 now_position;  //判断是否出去大圆
@@ -49,14 +49,11 @@ public class Player_controller : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (controller.State == Game_controller.Game_State.Game_Player) {
-			changestate (state);
+			ChangeState (state);
 		}
 	}
 
-    
-
-
-	void changestate(player_state state){
+	void ChangeState(player_state state){
 		switch(state){
             case (player_state.begin):
             
@@ -82,13 +79,13 @@ public class Player_controller : MonoBehaviour {
 			break;
 
             case (player_state.move):
-                move(objs[0]);
+                Move(objs[0]);
 			    after_move = true;
 			    state = player_state.begin;
 			    break;
             case (player_state.attack):
                 //Debug.Log("case");
-                attack(2, objs[0]);
+                Attack(2, objs[0]);
                 state = player_state.nothing;
                // Debug.Log(state);
 			    break;
@@ -101,7 +98,7 @@ public class Player_controller : MonoBehaviour {
 		}
 	}
 
-	void move(GameObject hero){	
+	void Move(GameObject hero){	
 			Rigidbody2D ri = hero.GetComponent<Rigidbody2D> ();
 			Vector2 temp_force = Vector2.zero;
 			begin_posion = control_out.transform.position;
@@ -117,7 +114,7 @@ public class Player_controller : MonoBehaviour {
 					end_position = Input.mousePosition;
 					control_out.transform.position = end_position;
 					//显示轨迹 
-					create_ball (hero);
+					CreateBall (hero);
 					//在圆外
 				} else {
 					float sin = (Input.mousePosition.y - control_in.transform.position.y) / Vector2.Distance (control_in.transform.position, Input.mousePosition);
@@ -126,7 +123,7 @@ public class Player_controller : MonoBehaviour {
 					end_position.y = control_in.transform.position.y + 25.0f * sin;
 					control_out.transform.position = end_position;
 					//显示轨迹
-					create_ball (hero);
+					CreateBall (hero);
 				}
 			}
 			//松开鼠标 获取力的大小
@@ -142,18 +139,19 @@ public class Player_controller : MonoBehaviour {
 			ri.AddForce (temp_force, ForceMode2D.Impulse);
 	}
 	//显示轨迹（略暴力，后期可优化）
-	void create_ball(GameObject hero){
+	void CreateBall(GameObject hero){
+
 		Vector2 ball_force;
 		ball_force.x = control_out.transform.position.x - control_in.transform.position.x;
 		ball_force.y = control_out.transform.position.y - control_in.transform.position.y;
 		//ball_ri.AddForce (-ball_force * 20, ForceMode2D.Impulse);
 		for(int i = 0 ;i < 20; i++){
-			GameObject ball_temp = Instantiate (ball, fx(-ball_force*0.7f,0.05f*i,hero), Quaternion.identity) as GameObject;
+			GameObject ball_temp = Instantiate (ball, Fx(-ball_force*0.7f,0.05f*i,hero), Quaternion.identity) as GameObject;
 			Destroy (ball_temp, 0.05f);
 		}
 	}
 	//计算平抛运动的轨迹 y=vt+1/2at^2
-	Vector2 fx(Vector2 speed, float time ,GameObject hero){
+	Vector2 Fx(Vector2 speed, float time ,GameObject hero){
 		Vector2 ret = new Vector2 (0, 0);
 		if (speed.x > 0)
 			ret.x = hero.transform.position.x + speed.x * time - 0.5f * 0.3f * time * time;
@@ -170,7 +168,7 @@ public class Player_controller : MonoBehaviour {
 		return word;
 	}
 
-    void attack(int NO, GameObject person){
+    void Attack(int NO, GameObject person){
         switch (NO)
         {
             case (0):

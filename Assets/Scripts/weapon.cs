@@ -8,7 +8,7 @@ public class weapon : MonoBehaviour {
 	// Use this for initialization
 	public GameObject control_in; 
 	public GameObject control_out;
-	public Camera camera;//主摄像机
+	public new Camera camera;//主摄像机
 	public GameObject ball; //轨迹用小球
 	Vector2 begin_posion;//开始的位置
 	Vector2 end_position; //结束的位置  结束指向开始作为力
