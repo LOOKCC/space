@@ -15,10 +15,6 @@ public class elastic_bomb_explosion : MonoBehaviour {
 		ri = GetComponent<Rigidbody2D> ();
 	}
 
-	// Update is called once per frame
-	void Update () {
-		
-	}
     void OnCollisionEnter2D(Collision2D coll){
         if(coll.gameObject.tag == "barrier" && can_explosion == true){
             //exam_distance();
@@ -29,7 +25,7 @@ public class elastic_bomb_explosion : MonoBehaviour {
             move_bomb.SetActive(false);
             //Invoke ("dehealt", 1f);
             Thread.Sleep(1000);
-            People.instance.DecraseHealth(5f, 1);
+            People.instance.DecreaseHealth(5f, 1);
             //clear ();
         }
     }

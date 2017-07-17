@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class Player_controller : MonoBehaviour {
@@ -20,6 +21,7 @@ public class Player_controller : MonoBehaviour {
 	bool can_rot = false;
 	bool on_land = true;
     bool can_change  = true;
+    private GameObject[] balls = new GameObject[20];
 
 	
 	private GameObject[] objs;
@@ -27,76 +29,95 @@ public class Player_controller : MonoBehaviour {
 
 	void Start () {
 		after_move = false;
+        state = player_state.begin;
 		//state = player_state.begin; 
         //测试
-        state = player_state.attack;
-
-
-        objs = new GameObject[10];
-
-        objs[0] = GameObject.Find("player1");
-        objs[1] = GameObject.Find("player2");
-        objs[2] = GameObject.Find("player3");
-        objs[3] = GameObject.Find("player4");
-        objs[4] = GameObject.Find("player5");
-        objs[5] = GameObject.Find("enemy1");
-        objs[6] = GameObject.Find("enemy2");
-        objs[7] = GameObject.Find("enemy3");
-        objs[8] = GameObject.Find("enemy4");
-        objs[9] = GameObject.Find("enemy5");
+        // state = player_state.attack;
+        for (int i = 0; i < balls.Length; ++i)
+        {
+            balls[i] = Instantiate(ball) as GameObject;
+        }
+        StartCoroutine("ChangeState");
 	}
 	
 	// Update is called once per frame
-	void Update () {
-		if (controller.State == Game_controller.Game_State.Game_Player) {
-			ChangeState (state);
-		}
-	}
+	//void Update () {
+	//    ChangeState (state);
+	//}
 
-	void ChangeState(player_state state){
-		switch(state){
-            case (player_state.begin):
-            
-			/*
-			if(after_move == false){
-				if(receive nothing){
-					state = player_state.nothing;
-				}
-				elseif(receve){
-					state = player_state.move;
-				}else(  attack){
-					state = player_state.attack;
-				}
-			}
-			if (after_move == true){
-				if(receive nothing){
-					state = player_state.nothing;
-				}else(  attack){
-					state = player_state.attack;
-				}
-			}
-               */         
-			break;
+	IEnumerator ChangeState(/*player_state state*/){
+        #region Before
+        //switch(state){
+        //          case (player_state.begin):
 
-            case (player_state.move):
-                Move(objs[0]);
-			    after_move = true;
-			    state = player_state.begin;
-			    break;
-            case (player_state.attack):
-                //Debug.Log("case");
-                Attack(2, objs[0]);
-                state = player_state.nothing;
-               // Debug.Log(state);
-			    break;
-            case (player_state.nothing):
-               // Debug.Log("hh");
-			    controller.State = Game_controller.Game_State.Game_Enemy;
-			    state = player_state.begin;
-			    after_move = false;
-			    break;
-		}
-	}
+        //	/*
+        //	if(after_move == false){
+        //		if(receive nothing){
+        //			state = player_state.nothing;
+        //		}
+        //		elseif(receve){
+        //			state = player_state.move;
+        //		}else(  attack){
+        //			state = player_state.attack;
+        //		}
+        //	}
+        //	if (after_move == true){
+        //		if(receive nothing){
+        //			state = player_state.nothing;
+        //		}else(  attack){
+        //			state = player_state.attack;
+        //		}
+        //	}
+        //             */         
+        //	break;
+
+        //          case (player_state.move):
+        //              Move(objs[0]);
+        //	    after_move = true;
+        //	    state = player_state.begin;
+        //	    break;
+        //          case (player_state.attack):
+        //              //Debug.Log("case");
+        //              Attack(2, objs[0]);
+        //              state = player_state.nothing;
+        //             // Debug.Log(state);
+        //	    break;
+        //          case (player_state.nothing):
+        //             // Debug.Log("hh");
+        //	    controller.State = Game_controller.Game_State.Game_Enemy;
+        //	    state = player_state.begin;
+        //	    after_move = false;
+        //	    break;
+        //}
+        #endregion
+        // 使用协程的话就需要while和yield
+
+        while (state == player_state.begin)
+        {
+            yield return null;
+            Thread.Sleep(2000);
+            state = player_state.attack;
+        }
+
+        while (state == player_state.move)
+        {
+            Move(People.instance.GetOnePerson(0));
+            state = player_state.attack;
+            yield return null;
+        }
+
+        if (state == player_state.attack)
+        {
+            Attack(3, People.instance.GetOnePerson(0));
+            //state = player_state.nothing;
+            yield return null;
+        }
+        // 不会再进入了
+        if (state == player_state.nothing)
+        {
+            yield return null;
+        }
+    }
 
 	void Move(GameObject hero){	
 			Rigidbody2D ri = hero.GetComponent<Rigidbody2D> ();
@@ -145,11 +166,22 @@ public class Player_controller : MonoBehaviour {
 		ball_force.x = control_out.transform.position.x - control_in.transform.position.x;
 		ball_force.y = control_out.transform.position.y - control_in.transform.position.y;
 		//ball_ri.AddForce (-ball_force * 20, ForceMode2D.Impulse);
-		for(int i = 0 ;i < 20; i++){
-			GameObject ball_temp = Instantiate (ball, Fx(-ball_force*0.7f,0.05f*i,hero), Quaternion.identity) as GameObject;
-			Destroy (ball_temp, 0.05f);
-		}
-	}
+		//for(int i = 0 ;i < 20; i++){
+		//	GameObject ball_temp = Instantiate (ball, Fx(-ball_force*0.7f,0.05f*i,hero), Quaternion.identity) as GameObject;
+		//	Destroy (ball_temp, 0.05f);
+		//}
+        // 改用设置位置
+        for (int i = 0; i < balls.Length; ++i)
+        {
+            balls[i].transform.position = (Vector2)Fx(-ball_force * 0.7f, 0.05f * i, hero);
+        }
+        // 0.03s后隐藏，仍有重影现象
+        Thread.Sleep(30);
+        for (int i = 0; i < balls.Length; ++i)
+        {
+            balls[i].SetActive(false);
+        }
+    }
 	//计算平抛运动的轨迹 y=vt+1/2at^2
 	Vector2 Fx(Vector2 speed, float time ,GameObject hero){
 		Vector2 ret = new Vector2 (0, 0);
@@ -167,7 +199,7 @@ public class Player_controller : MonoBehaviour {
 		Vector3 word = camera.ViewportToWorldPoint (view);
 		return word;
 	}
-
+    // 攻击选择
     void Attack(int NO, GameObject person){
         switch (NO)
         {

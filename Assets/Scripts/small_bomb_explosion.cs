@@ -23,7 +23,7 @@ public class small_bomb_explosion : MonoBehaviour {
             smallbomb.SetActive(false);
             //Invoke ("dehealt", 1f);
             Thread.Sleep(1000);
-            People.instance.DecraseHealth(2f, 1f);
+            People.instance.DecreaseHealth(2f, 1f);
         //clear ();
 		}
 	}

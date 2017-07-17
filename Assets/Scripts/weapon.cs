@@ -66,8 +66,6 @@ public class weapon : MonoBehaviour {
 		
 	}
 
-
-
 	void force(GameObject hero){
 		Rigidbody2D ri = hero.GetComponent<Rigidbody2D> ();
 		Vector2 temp_force = Vector2.zero;
@@ -139,8 +137,6 @@ public class weapon : MonoBehaviour {
 		Vector3 word = camera.ViewportToWorldPoint (view);
 		return word;
 	}
-
-
 
 	void box(){
         if (can_attack == true)

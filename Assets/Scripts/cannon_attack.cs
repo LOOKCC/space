@@ -19,7 +19,7 @@ public class cannon_attack : MonoBehaviour {
             //Invoke ("dehealt", 1f);
             // 休眠1s再调用减血
             Thread.Sleep(1000);
-            People.instance.DecraseHealth(2f, 1f);
+            People.instance.DecreaseHealth(2f, 1f);
             //clear ();
         }
     }

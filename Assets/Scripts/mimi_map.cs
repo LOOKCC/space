@@ -4,17 +4,15 @@ using UnityEngine;
 using UnityEngine.UI;
 //实现小地图，鼠标点击即显示点击部分的内容
 public class mimi_map : MonoBehaviour {
-
+    // 主相机
 	public Camera maincamera; 
 	public Image frame;
 	public Image mini_map;
 	private  Game_controller controler;
 	Vector3 frame_pos;
 	Vector3 camera_pos;
-
 	float screen_width;
 	float screen_height;
-
 	float map_height;
 	float map_width;
 
@@ -56,7 +54,7 @@ public class mimi_map : MonoBehaviour {
 			return y;
 	}
 	//对应比例转化
-	Vector3 transpos(Vector3 framepos){
+	Vector3 transpos(Vector3 framepos) {
 		Vector3 ret;
 		ret.x = 28.0f * framepos.x / map_width - 14.0f;
 		ret.y = 7.0f - (screen_height - framepos.y) * 14.0f / map_height;
