@@ -31,7 +31,7 @@ public class mimi_map : MonoBehaviour {
 	}
 	// Update is called once per frame
 	void Update () {
-		if (controler.State == Game_controller.Game_State.Game_Player) {
+		if (controler.state == Game_controller.Game_State.Game_Player) {
 			change ();
 		}
 	}

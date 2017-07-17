@@ -6,21 +6,28 @@ using UnityEngine.UI;
 public class People : MonoBehaviour {
     public static People instance = new People();   // 实例化一个 
 
-    public GameObject[] people;   // 人的数组
-
+    private GameObject[] people = new GameObject[10];   // 人的数组
     private static float[] distances = new float[10]; // 距离的静态数组
     private static HPController[] HPs = new HPController[10];  // 血量数组
     private Slider[] hpSliders = new Slider[10];  // 人物的血条
     // start初始化一些变量
-    private void Start()
+    private void Awake()
     {
+        for (int i = 1; i <= 5; i++)
+        {
+            people[i - 1] = GameObject.Find("player" + i);
+        }
+        for (int i = 1; i <= 5; i++)
+        {
+            people[i + 4] = GameObject.Find("enemy" + i);
+        }
         int index = 0;
         foreach (var person in people)
         {
             HPs[index] = person.GetComponent<HPController>();
             hpSliders[index] = person.GetComponentInChildren<Slider>();
             index++;
-;        }
+;       }
     }
     // 其他人调用，返回血条数组
     public HPController[] GetHPs()
@@ -46,7 +53,7 @@ public class People : MonoBehaviour {
             // 减血
             if (HPs[i].isDeath == false && distances[i] < 4)
             {
-                HPs[i].health -= 1.0f / (distances[i] * distances[i] + 0.1f);
+                HPs[i].health -= damage / (distances[i] * distances[i] + 0.1f);
                 // 更新血条，被打死的使用0而不是负数
                 hpSliders[i].value = (HPs[i].health > 0 ? HPs[i].health : 0) / HPs[i].maxHealth;
                 // 判断死活

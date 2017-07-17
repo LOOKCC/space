@@ -14,11 +14,11 @@ public class tsunami_arrack : MonoBehaviour {
     void Start () {
         healths = People.instance.GetHPs();
         objs = People.instance.GetPeople();
-        Thread.Sleep(2000);
         DecreaseHealth();
 	}
 
 	void DecreaseHealth(){
+        Thread.Sleep(2000);
         for (int i = 0; i < objs.Length; i++)
         {
             if (!healths[i].isDeath)

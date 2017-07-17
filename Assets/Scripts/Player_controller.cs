@@ -4,6 +4,7 @@ using System.Threading;
 using UnityEngine;
 
 public class Player_controller : MonoBehaviour {
+    public static Player_controller instance = new Player_controller();
 
 	public enum player_state{begin, nothing, move, attack};
 	player_state state;
@@ -23,10 +24,6 @@ public class Player_controller : MonoBehaviour {
     bool can_change  = true;
     private GameObject[] balls = new GameObject[20];
 
-	
-	private GameObject[] objs;
-
-
 	void Start () {
 		after_move = false;
         state = player_state.begin;
@@ -37,15 +34,23 @@ public class Player_controller : MonoBehaviour {
         {
             balls[i] = Instantiate(ball) as GameObject;
         }
-        StartCoroutine("ChangeState");
+        //StartCoroutine("ChangeState");
+        //StartCoroutine(ChangeState());
 	}
-	
-	// Update is called once per frame
-	//void Update () {
-	//    ChangeState (state);
-	//}
 
-	IEnumerator ChangeState(/*player_state state*/){
+    // Update is called once per frame
+    int count = 0;
+    void Update()
+    {
+        //Debug.Log("The NO" + ++count + "frame");
+    }
+
+    public void StartThread()
+    {
+        //StartCoroutine(instance.ChangeState());
+    }
+
+    public IEnumerator ChangeState(/*player_state state*/){
         #region Before
         //switch(state){
         //          case (player_state.begin):
@@ -91,32 +96,46 @@ public class Player_controller : MonoBehaviour {
         //}
         #endregion
         // 使用协程的话就需要while和yield
-
+        state = player_state.begin;
         while (state == player_state.begin)
         {
+            Debug.Log("Into begin");
             yield return null;
-            Thread.Sleep(2000);
-            state = player_state.attack;
+            //Thread.Sleep(2000);
+            //state = player_state.attack;
+            state = player_state.nothing;
         }
 
         while (state == player_state.move)
         {
             Move(People.instance.GetOnePerson(0));
-            state = player_state.attack;
+            Debug.Log("Into move");
+            //state = player_state.attack;
             yield return null;
+        }
+
+        while (state == player_state.begin)
+        {
+            Debug.Log("Into begin");
+            yield return null;
+            //Thread.Sleep(2000);
+            //state = player_state.attack;
         }
 
         if (state == player_state.attack)
         {
             Attack(3, People.instance.GetOnePerson(0));
+            Debug.Log("Into sttack");
             //state = player_state.nothing;
             yield return null;
         }
-        // 不会再进入了
         if (state == player_state.nothing)
         {
+            Debug.Log("Into nothing");
             yield return null;
         }
+        Game_controller.instance.ChangeState(Game_controller.Game_State.Game_Player);
+        yield break;
     }
 
 	void Move(GameObject hero){	
