@@ -14,6 +14,6 @@ public class HPController : MonoBehaviour {
     {
         isDeath = false;
         // 从子物体获取slider
-        hpSlider = GetComponentInChildren<Slider>();  
+        hpSlider = GetComponentInChildren<Slider>();
     }
 }

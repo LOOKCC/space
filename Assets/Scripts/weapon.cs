@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 //武器库(因为没有图还没有做测试，应该会有很多bug，有图后会测试和优化）
-public class weapon : MonoBehaviour {
+public class Weapon : MonoBehaviour {
 
 	// Use this for initialization
 	public GameObject control_in; 

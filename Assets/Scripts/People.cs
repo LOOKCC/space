@@ -6,10 +6,10 @@ using UnityEngine.UI;
 public class People : MonoBehaviour {
     public static People instance = new People();   // 实例化一个 
 
-    private GameObject[] people = new GameObject[10];   // 人的数组
+    private static GameObject[] people = new GameObject[10];   // 人的数组
     private static float[] distances = new float[10]; // 距离的静态数组
     private static HPController[] HPs = new HPController[10];  // 血量数组
-    private Slider[] hpSliders = new Slider[10];  // 人物的血条
+    private static Slider[] hpSliders = new Slider[10];  // 人物的血条
     // start初始化一些变量
     private void Awake()
     {
@@ -21,6 +21,13 @@ public class People : MonoBehaviour {
         {
             people[i + 4] = GameObject.Find("enemy" + i);
         }
+
+        foreach (var person in people)
+        {
+            person.GetComponent<Rigidbody2D>();
+        }
+
+        Debug.Log("Find all people");
         int index = 0;
         foreach (var person in people)
         {
