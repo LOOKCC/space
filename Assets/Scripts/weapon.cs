@@ -125,7 +125,7 @@ public class weapon : MonoBehaviour {
 		}
 	}
 	//计算平抛运动的轨迹 y=vt+1/2at^2
-	Vector2 fx(Vector2 speed, float time ,GameObject hero){
+	Vector2 fx(Vector2 speed, float time ,GameObject hero){0
 		Vector2 ret = new Vector2 (0, 0);
 		if (speed.x > 0)
 			ret.x = hero.transform.position.x + speed.x * time - 0.5f * 0.3f * time * time;

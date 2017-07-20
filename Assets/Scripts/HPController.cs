@@ -19,12 +19,14 @@ public class HPController : MonoBehaviour {
     // Update is called once per frame
     void Update () {
         // 测试减血效果
-        if (Input.GetMouseButtonDown(0) && health > 0)
-        {
-            health -= 10;
-            if (health <= 0)
-                isdeath = true;
-            hpSlider.value = health / maxhealth;
-        }
+        // if (Input.GetMouseButtonDown(0) && health > 0)
+        // {
+        //     health -= 10;
+        //     if (health <= 0)
+        //         isdeath = true;
+        //     hpSlider.value = health / maxhealth;
+        // }
+        // 更新血条，其实可以在一个函数中进行，而不是在update里
+        hpSlider.value = health / maxhealth;
     }
 }
