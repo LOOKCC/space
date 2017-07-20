@@ -133,7 +133,7 @@ public class PlayerController : MonoBehaviour {
             if (Vector2.Distance (/*control_in.transform.position*/inPos, Input.mousePosition) <radius/2) {
 				end_position = Input.mousePosition;
                 //control_out.transform.position = end_position;
-                SetOut(end_position);
+                //SetOut(end_position);
 				//显示轨迹 
 				CreateBall (hero);
 				//在圆外
@@ -143,8 +143,8 @@ public class PlayerController : MonoBehaviour {
                 end_position.x = /*control_in.transform.position.x*/ inPos.x +radius/2 * cos;
                 end_position.y = /*control_in.transform.position.y*/ inPos.y +radius/2 * sin;
 				//control_out.transform.position = end_position;
-                SetOut(end_position);
-                SetOut(end_position);
+                //SetOut(end_position);
+                //SetOut(end_position);
 				//显示轨迹
 				CreateBall (hero);
                 yield return null;
@@ -168,11 +168,7 @@ public class PlayerController : MonoBehaviour {
         Debug.Log("Out Move");
         yield break;
 	}
-
-    private void SetOut(Vector3 v)
-    {
-        control_out.transform.position = v;
-    }
+        
 
     private void ResetPos()
     {
