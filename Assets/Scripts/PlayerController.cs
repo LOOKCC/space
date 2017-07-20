@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour {
 
 	public GameObject control_in; // 大的那个
 	public GameObject control_out;  // 小的那个
+    private float radius ;
     public new Camera camera;//主摄像机
     public GameObject ball; //轨迹用小球
 	Vector2 begin_posion;//开始的位置
@@ -27,6 +28,7 @@ public class PlayerController : MonoBehaviour {
     private Vector3 outPos;
 
 	void Start () {
+        radius = control_in.transform.position.x;
 		afterMove = false;
         state = PlayerState.begin;
 		//state = player_state.begin; 
@@ -128,7 +130,7 @@ public class PlayerController : MonoBehaviour {
         //推拽 分两种，鼠标在圆内和在圆外
         while (Input.GetMouseButton (0) && can_move) {
 			//在圆内
-			if (Vector2.Distance (/*control_in.transform.position*/inPos, Input.mousePosition) < 25.0f) {
+            if (Vector2.Distance (/*control_in.transform.position*/inPos, Input.mousePosition) <radius/2) {
 				end_position = Input.mousePosition;
                 //control_out.transform.position = end_position;
                 SetOut(end_position);
@@ -138,8 +140,8 @@ public class PlayerController : MonoBehaviour {
 			} else {
 				float sin = (Input.mousePosition.y - /*control_in.transform.position.y*/ inPos.y) / Vector2.Distance (/*control_in.transform.position*/ inPos, Input.mousePosition);
 				float cos = (Input.mousePosition.x - /*control_in.transform.position.x*/ inPos.x) / Vector2.Distance (/*control_in.transform.position*/ inPos, Input.mousePosition);
-				end_position.x = /*control_in.transform.position.x*/ inPos.x + 25.0f * cos;
-				end_position.y = /*control_in.transform.position.y*/ inPos.y + 25.0f * sin;
+                end_position.x = /*control_in.transform.position.x*/ inPos.x +radius/2 * cos;
+                end_position.y = /*control_in.transform.position.y*/ inPos.y +radius/2 * sin;
 				//control_out.transform.position = end_position;
                 SetOut(end_position);
                 SetOut(end_position);

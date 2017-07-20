@@ -8,6 +8,7 @@ public class Weapon : MonoBehaviour {
 	// Use this for initialization
 	public GameObject control_in; 
 	public GameObject control_out;
+    private float radius;
 	public new Camera camera;//主摄像机
 	public GameObject ball; //轨迹用小球
 	Vector2 begin_posion;//开始的位置
@@ -48,6 +49,7 @@ public class Weapon : MonoBehaviour {
 
 
 	void Start () {
+        radius = control_in.transform.position.x;
         screen_width = Screen.width;
         screen_height = Screen.height;
         map_width = mini_map.transform.position.x * 2;
@@ -72,14 +74,14 @@ public class Weapon : MonoBehaviour {
 		begin_posion = control_out.transform.position;
        // Debug.Log("force");
 		//在固定区域点下
-		if (Input.GetMouseButtonDown (0) && Vector2.Distance (Input.mousePosition, control_in.transform.position) < 25.0f) {
+        if (Input.GetMouseButtonDown (0) && Vector2.Distance (Input.mousePosition, control_in.transform.position) < radius/2) {
 			Debug.Log ("get the mouse");
 			can_move = true;
 		}
 		//推拽 分两种，鼠标在圆内和在圆外
 		if (Input.GetMouseButton (0) && can_move) {
 			//在圆内
-			if (Vector2.Distance (control_in.transform.position, Input.mousePosition) < 25.0f) {
+            if (Vector2.Distance (control_in.transform.position, Input.mousePosition) < radius/2) {
 				end_position = Input.mousePosition;
 				control_out.transform.position = end_position;
 				//显示轨迹 
@@ -88,8 +90,8 @@ public class Weapon : MonoBehaviour {
 			} else {
 				float sin = (Input.mousePosition.y - control_in.transform.position.y) / Vector2.Distance (control_in.transform.position, Input.mousePosition);
 				float cos = (Input.mousePosition.x - control_in.transform.position.x) / Vector2.Distance (control_in.transform.position, Input.mousePosition);
-				end_position.x = control_in.transform.position.x + 25.0f * cos;
-				end_position.y = control_in.transform.position.y + 25.0f * sin;
+                end_position.x = control_in.transform.position.x + radius/2 * cos;
+                end_position.y = control_in.transform.position.y + radius/2 * sin;
 				control_out.transform.position = end_position;
 				//显示轨迹
 				create_ball (hero);
@@ -208,15 +210,15 @@ public class Weapon : MonoBehaviour {
         can_attack = false;
         //GameObject cannon_obj = Instantiate(Cannon, person.transform.position, Quaternion.identity);
         //Rigidbody2D ri = cannon_obj.GetComponent<Rigidbody2D> ();
-		if (Input.GetMouseButtonDown (0) && Vector2.Distance (Input.mousePosition, control_in.transform.position) < 25.0f) {
+        if (Input.GetMouseButtonDown (0) && Vector2.Distance (Input.mousePosition, control_in.transform.position) <radius/2) {
 			can_move = true;
 		}
 		if (Input.GetMouseButton (0) && can_move) {
-			end_position = new Vector2 (50.0f, 0.0f);
-			end_position.y = clamp (Input.mousePosition.y, 25.0f, 75.0f);
+            end_position = new Vector2 (radius, 0.0f);
+            end_position.y = clamp (Input.mousePosition.y, radius/2, radius+radius/2);
 			control_out.transform.position = end_position;
             Cannon.transform.position = new Vector3 (person
-                .transform.position.x, person.transform.position.y + (control_out.transform.position.y - 50.0f) / 10, 0);
+                .transform.position.x, person.transform.position.y + (control_out.transform.position.y - radius) / 10, 0);
 		}
 		//松开鼠标 获取力的大小
         if (Input.GetMouseButtonUp (0)&& can_move ) {
@@ -225,7 +227,7 @@ public class Weapon : MonoBehaviour {
 			control_out.transform.position = control_in.transform.position;
 			GameObject bomb = Instantiate (CannonBomb, Cannon.transform.position, Quaternion.identity);
 			Rigidbody2D ri_bomb = bomb.GetComponent<Rigidbody2D> ();
-			ri_bomb.AddForce (new Vector2 (50.0f, 0), ForceMode2D.Impulse);
+            ri_bomb.AddForce (new Vector2 (radius, 0), ForceMode2D.Impulse);
 		}
 	}
     void small_bomb(GameObject person){
@@ -263,7 +265,7 @@ public class Weapon : MonoBehaviour {
             begin_posion = control_out.transform.position;
             // Debug.Log("force");
             //在固定区域点下
-            if (Input.GetMouseButtonDown(0) && Vector2.Distance(Input.mousePosition, control_in.transform.position) < 25.0f)
+            if (Input.GetMouseButtonDown(0) && Vector2.Distance(Input.mousePosition, control_in.transform.position) < radius/2)
             {
                 Debug.Log("get the mouse");
                 can_move = true;
@@ -272,7 +274,7 @@ public class Weapon : MonoBehaviour {
             if (Input.GetMouseButton(0) && can_move)
             {
                 //在圆内
-                if (Vector2.Distance(control_in.transform.position, Input.mousePosition) < 25.0f)
+                if (Vector2.Distance(control_in.transform.position, Input.mousePosition) < radius/2)
                 {
                     end_position = Input.mousePosition;
                     control_out.transform.position = end_position;
@@ -282,8 +284,8 @@ public class Weapon : MonoBehaviour {
                 {
                     float sin = (Input.mousePosition.y - control_in.transform.position.y) / Vector2.Distance(control_in.transform.position, Input.mousePosition);
                     float cos = (Input.mousePosition.x - control_in.transform.position.x) / Vector2.Distance(control_in.transform.position, Input.mousePosition);
-                    end_position.x = control_in.transform.position.x + 25.0f * cos;
-                    end_position.y = control_in.transform.position.y + 25.0f * sin;
+                    end_position.x = control_in.transform.position.x + radius/2 * cos;
+                    end_position.y = control_in.transform.position.y + radius/2 * sin;
                     control_out.transform.position = end_position;
                     create_ball(MoveBomb);
                 }
@@ -305,15 +307,15 @@ public class Weapon : MonoBehaviour {
         if (in_sky)
         {
             //totaltime += Time.deltaTime;
-            if (Input.GetMouseButtonDown (0) && Vector2.Distance (Input.mousePosition, control_in.transform.position) < 25.0f) {
+            if (Input.GetMouseButtonDown (0) && Vector2.Distance (Input.mousePosition, control_in.transform.position) < radius/2) {
                 can_move = true;
             }
             if (Input.GetMouseButton (0) && can_move) {
-                end_position = new Vector2 (50.0f, 50.0f);
-                end_position.x = clamp (Input.mousePosition.x, 25.0f, 75.0f);
+                end_position = new Vector2 (radius, radius);
+                end_position.x = clamp (Input.mousePosition.x, radius/2, radius+radius/2);
                 control_out.transform.position = end_position;
                 Debug.Log(control_out.transform.position);
-                MoveBomb.transform.position = new Vector3 (MoveBomb.transform.position.x + (control_out.transform.position.x - 50.0f) / 400, MoveBomb.transform.position.y , 0);
+                MoveBomb.transform.position = new Vector3 (MoveBomb.transform.position.x + (control_out.transform.position.x - radius) / 400, MoveBomb.transform.position.y , 0);
             }
             //松开鼠标 获取力的大小
             if (Input.GetMouseButtonUp (0)&& can_move ) {
