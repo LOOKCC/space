@@ -166,6 +166,7 @@ public class PlayerController : MonoBehaviour {
 		}
 		ri.AddForce (temp_force, ForceMode2D.Impulse);
         Debug.Log("Out Move");
+        // break;
         yield break;
 	}
         
