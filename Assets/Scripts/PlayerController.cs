@@ -68,6 +68,7 @@ public class PlayerController : MonoBehaviour {
             yield return StartCoroutine(Move(t));
             Debug.Log("Into move");
         }
+
         while (state == PlayerState.move)
         {
             state = PlayerState.begin;
