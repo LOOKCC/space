@@ -11,6 +11,7 @@ public class Player_controller : MonoBehaviour {
 
 	public GameObject control_in; 
 	public GameObject control_out;
+    private float radious;
 	public Camera camera;//主摄像机
 	public GameObject ball; //轨迹用小球
 	Vector2 begin_posion;//开始的位置
@@ -26,6 +27,7 @@ public class Player_controller : MonoBehaviour {
 
 
 	void Start () {
+        radious = control_in.transform.position.x;
 		after_move = false;
 		//state = player_state.begin; 
         //测试
@@ -45,16 +47,17 @@ public class Player_controller : MonoBehaviour {
         objs[8] = GameObject.Find("enemy4");
         objs[9] = GameObject.Find("enemy5");
 	}
+    public bool wait = false;
 	
 	// Update is called once per frame
 	void Update () {
         
-
+        Debug.Log(Input.mousePosition);
 		if (controller.State == Game_controller.Game_State.Game_Player) {
-			changestate (state);
+            changestate (state);
 		}
 	}
-	void changestate(player_state state){
+    void changestate(player_state state){
 		switch(state){
             case (player_state.begin):
             
@@ -86,13 +89,14 @@ public class Player_controller : MonoBehaviour {
 			    break;
             case (player_state.attack):
                 //Debug.Log("case");
-                attack(2, objs[0]);
+                attack(1, objs[0]);
                 state = player_state.nothing;
-               // Debug.Log(state);
+                Debug.Log(state);
+               // wait = true;
 			    break;
             case (player_state.nothing):
-               // Debug.Log("hh");
-			    controller.State = Game_controller.Game_State.Game_Enemy;
+                Debug.Log("hh");
+			   // controller.State = Game_controller.Game_State.Game_Enemy;
 			    state = player_state.begin;
 			    after_move = false;
 			    break;
@@ -104,14 +108,14 @@ public class Player_controller : MonoBehaviour {
 			Vector2 temp_force = Vector2.zero;
 			begin_posion = control_out.transform.position;
 			//在固定区域点下
-			if (Input.GetMouseButtonDown (0) && Vector2.Distance (Input.mousePosition, control_in.transform.position) < 25.0f) {
+            if (Input.GetMouseButtonDown (0) && Vector2.Distance (Input.mousePosition, control_in.transform.position) < radious/2) {
 				Debug.Log ("get the mouse");
 				can_move = true;
 			}
 			//推拽 分两种，鼠标在圆内和在圆外
 			if (Input.GetMouseButton (0) && can_move) {
 				//在圆内
-				if (Vector2.Distance (control_in.transform.position, Input.mousePosition) < 25.0f) {
+            if (Vector2.Distance (control_in.transform.position, Input.mousePosition) < radious/2) {
 					end_position = Input.mousePosition;
 					control_out.transform.position = end_position;
 					//显示轨迹 
@@ -120,8 +124,8 @@ public class Player_controller : MonoBehaviour {
 				} else {
 					float sin = (Input.mousePosition.y - control_in.transform.position.y) / Vector2.Distance (control_in.transform.position, Input.mousePosition);
 					float cos = (Input.mousePosition.x - control_in.transform.position.x) / Vector2.Distance (control_in.transform.position, Input.mousePosition);
-					end_position.x = control_in.transform.position.x + 25.0f * cos;
-					end_position.y = control_in.transform.position.y + 25.0f * sin;
+                end_position.x = control_in.transform.position.x + (radious/2) * cos;
+                end_position.y = control_in.transform.position.y + (radious/2 )* sin;
 					control_out.transform.position = end_position;
 					//显示轨迹
 					create_ball (hero);

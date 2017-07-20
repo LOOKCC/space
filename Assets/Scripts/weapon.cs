@@ -8,6 +8,7 @@ public class weapon : MonoBehaviour {
 	// Use this for initialization
 	public GameObject control_in; 
 	public GameObject control_out;
+    private float radious;
 	public Camera camera;//主摄像机
 	public GameObject ball; //轨迹用小球
 	Vector2 begin_posion;//开始的位置
@@ -48,6 +49,7 @@ public class weapon : MonoBehaviour {
 
 
 	void Start () {
+        radious = control_in.transform.position.x;
         screen_width = Screen.width;
         screen_height = Screen.height;
         map_width = mini_map.transform.position.x * 2;
@@ -74,14 +76,14 @@ public class weapon : MonoBehaviour {
 		begin_posion = control_out.transform.position;
        // Debug.Log("force");
 		//在固定区域点下
-		if (Input.GetMouseButtonDown (0) && Vector2.Distance (Input.mousePosition, control_in.transform.position) < 25.0f) {
+        if (Input.GetMouseButtonDown (0) && Vector2.Distance (Input.mousePosition, control_in.transform.position) < radious/2) {
 			Debug.Log ("get the mouse");
 			can_move = true;
 		}
 		//推拽 分两种，鼠标在圆内和在圆外
 		if (Input.GetMouseButton (0) && can_move) {
 			//在圆内
-			if (Vector2.Distance (control_in.transform.position, Input.mousePosition) < 25.0f) {
+            if (Vector2.Distance (control_in.transform.position, Input.mousePosition) < radious/2) {
 				end_position = Input.mousePosition;
 				control_out.transform.position = end_position;
 				//显示轨迹 
@@ -90,8 +92,8 @@ public class weapon : MonoBehaviour {
 			} else {
 				float sin = (Input.mousePosition.y - control_in.transform.position.y) / Vector2.Distance (control_in.transform.position, Input.mousePosition);
 				float cos = (Input.mousePosition.x - control_in.transform.position.x) / Vector2.Distance (control_in.transform.position, Input.mousePosition);
-				end_position.x = control_in.transform.position.x + 25.0f * cos;
-				end_position.y = control_in.transform.position.y + 25.0f * sin;
+                end_position.x = control_in.transform.position.x + (radious/2) * cos;
+                end_position.y = control_in.transform.position.y + (radious/2) * sin;
 				control_out.transform.position = end_position;
 				//显示轨迹
 				create_ball (hero);
@@ -323,7 +325,7 @@ public class weapon : MonoBehaviour {
             if (Input.GetMouseButtonUp (0)&& can_move ) {
                 can_move = false;
                 //float temp = control_out.transform.position.y - 50.0f;
-                //control_out.transform.position = control_in.transform.position;
+                control_out.transform.position = control_in.transform.position;
                // GameObject bomb = Instantiate (CannonBomb, Cannon.transform.position, Quaternion.identity);
                // Rigidbody2D ri_bomb = bomb.GetComponent<Rigidbody2D> ();
                 //ri_bomb.AddForce (new Vector2 (50.0f, 0), ForceMode2D.Impulse);
