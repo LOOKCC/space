@@ -33,10 +33,10 @@ public class GameController : MonoBehaviour {
                 Debug.Log("Into player;");
                 //Thread.Sleep(50);
                 //Player_controller.instance.StartThread();
-                //StartCoroutine(PlayerController.instance.ChangeState());
-                StartCoroutine(PlayerController.instance.Move(People.instance.GetOnePerson(0)));
-				//
-			break;
+                StartCoroutine(PlayerController.instance.ChangeState());
+                //StartCoroutine(PlayerController.instance.Move(People.instance.GetOnePerson(0)));
+                //
+                break;
 			case GameState.Game_Enemy:
 				//
 				break;

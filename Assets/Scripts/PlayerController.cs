@@ -26,6 +26,8 @@ public class PlayerController : MonoBehaviour {
 
     private Vector3 inPos;
     private Vector3 outPos;
+    private bool changePos = false; // 判断是否更新UI
+    private int reset = 0;  // 重置那两个东西
 
 	void Start () {
         radius = control_in.transform.position.x;
@@ -47,6 +49,15 @@ public class PlayerController : MonoBehaviour {
     {
         outPos = control_out.transform.position;
         //Debug.Log("The NO" + ++count + "frame");
+        if (changePos)
+        {
+            ChangePosition();
+        }
+        if (reset > 0)
+        {
+            reset = 0;
+            ResetPos();
+        }
     }
 
     public IEnumerator ChangeState() {
@@ -55,7 +66,7 @@ public class PlayerController : MonoBehaviour {
         // 状态为开始状态
         while (state == PlayerState.begin)
         {
-            Debug.Log("Into begin");
+            Debug.Log("Into begin1");
             yield return null;
             // 等待选择状态改变，此处先设置为move
             state = PlayerState.move;
@@ -64,23 +75,28 @@ public class PlayerController : MonoBehaviour {
         // 状态在move完毕后改为begin，等待选择下一步
         if (state == PlayerState.move)
         {
-            var t = People.instance.GetOnePerson(0);
-            yield return StartCoroutine(Move(t));
+            var person = People.instance.GetOnePerson(0);
+            if (person == null)
+            {
+                Debug.Log("Null person");
+            }
+            //yield return StartCoroutine(Move(person));
+            new Thread(Move).Start();
             Debug.Log("Into move");
         }
 
-        while (state == PlayerState.move)
-        {
-            state = PlayerState.begin;
-            //Move(People.instance.GetOnePerson(0));
-            yield return null;
-        }
+        //while (state == PlayerState.move)
+        //{
+        //    state = PlayerState.begin;
+        //    //Move(People.instance.GetOnePerson(0));
+        //    yield return null;
+        //}
 
-        while (state == PlayerState.begin)
+        if (state == PlayerState.begin)
         {
-            Debug.Log("Into begin");
+            Debug.Log("Into begin2");
             // 此处测试进入attack状态，实际应该弹出菜单等待选择
-            state = PlayerState.attack;
+            //state = PlayerState.attack;
             yield return null;
         }
         // stack只要进入一次，此处可以返回武器发射协程
@@ -104,56 +120,62 @@ public class PlayerController : MonoBehaviour {
             //yield return StartCoroutine("supply");
         }
         // 此处测试进入player查看是否可以多次启动协程，实际应进入enemy状态
-        GameController.instance.SetGameState(GameController.GameState.Game_Player);
-        Debug.Log("Changed");
+        //GameController.instance.SetGameState(GameController.GameState.Game_Player);
+        Debug.Log("End");
         // 本次协程结束
         yield break;
     }
+    GameObject hero = People.instance.GetOnePerson(0);
 
-	public IEnumerator Move(GameObject hero){
+    public /*IEnumerator*/ void Move(){
         Debug.Log("Into Move");
 		Rigidbody2D ri = hero.GetComponent<Rigidbody2D> ();
         Vector2 temp_force = Vector2.zero;
         
-        while (!Input.GetMouseButtonDown(0))
+        while (!Input.GetMouseButtonDown(0) || !(Vector2.Distance(Input.mousePosition, inPos) < radius / 2))
         {
-            yield return null;
+            Thread.Sleep(200);
+            //yield return null;
         }
         //在固定区域点下
+        Debug.Log("Get the mouse down;");
         can_move = true;
-        //Debug.Log("Get position" + Input.mousePosition);
+        //Debug.Log("Get position" + Input.mousePosition))
         //Debug.Log("Get in position" + control_in.transform.position);
-   //     if (Input.GetMouseButtonDown (0) && Vector2.Distance (Input.mousePosition, /*control_in.transform.position*/ inPos) < 25.0f) {
-			//Debug.Log ("get the mouse");
-			//can_move = true;
-   //         yield return null;
-   //     }
+        //if (Input.GetMouseButtonDown(0) && Vector2.Distance(Input.mousePosition, inPos) < 25.0f)
+        //{
+        //    Debug.Log("get the mouse");
+        //    can_move = true;
+        //    yield return null;
+        //}
         //推拽 分两种，鼠标在圆内和在圆外
+        Debug.Log("Start move");
         while (Input.GetMouseButton (0) && can_move) {
 			//在圆内
-            if (Vector2.Distance (/*control_in.transform.position*/inPos, Input.mousePosition) <radius/2) {
+            if (Vector2.Distance (inPos, Input.mousePosition) <radius/2) {
 				end_position = Input.mousePosition;
+                //changePos = true;
                 //control_out.transform.position = end_position;
                 //SetOut(end_position);
-				//显示轨迹 
-				CreateBall (hero);
 				//在圆外
 			} else {
-				float sin = (Input.mousePosition.y - /*control_in.transform.position.y*/ inPos.y) / Vector2.Distance (/*control_in.transform.position*/ inPos, Input.mousePosition);
-				float cos = (Input.mousePosition.x - /*control_in.transform.position.x*/ inPos.x) / Vector2.Distance (/*control_in.transform.position*/ inPos, Input.mousePosition);
-                end_position.x = /*control_in.transform.position.x*/ inPos.x +radius/2 * cos;
-                end_position.y = /*control_in.transform.position.y*/ inPos.y +radius/2 * sin;
-				//control_out.transform.position = end_position;
+				float sin = (Input.mousePosition.y - inPos.y) / Vector2.Distance (inPos, Input.mousePosition);
+				float cos = (Input.mousePosition.x - inPos.x) / Vector2.Distance (inPos, Input.mousePosition);
+                end_position.x = inPos.x +radius/2 * cos;
+                end_position.y = inPos.y +radius/2 * sin;
+                //control_out.transform.position = end_position;
                 //SetOut(end_position);
                 //SetOut(end_position);
-				//显示轨迹
-				CreateBall (hero);
-                yield return null;
+                changePos = true;
 			}
-            yield return null;
+            //显示轨迹
+            CreateBall(hero);
+            Thread.Sleep(33);
+            //yield return null;
+            changePos = false;
 		}
 		//松开鼠标 获取力的大小
-        if (Input.GetMouseButtonUp (0)&&can_move == true ) {
+        if (Input.GetMouseButtonUp (0)&&can_move) {
             // 修改状态为begin
             state = PlayerState.begin;
 			can_move = false;
@@ -161,15 +183,20 @@ public class PlayerController : MonoBehaviour {
 			can_rot = true;
 			on_land = false;
 			//control_out.transform.position = control_in.transform.position;
-            ResetPos();
-            temp_force = /*control_in.transform.position*/ inPos;
+            //ResetPos();
+            temp_force = inPos;
 			temp_force = temp_force - end_position;
 		}
 		ri.AddForce (temp_force, ForceMode2D.Impulse);
         Debug.Log("Out Move");
-        yield break;
+        reset = 1;// 给出重置信号
+        //yield break;
 	}
-        
+    
+    private void ChangePosition()
+    {
+        control_out.transform.position = end_position;
+    }
 
     private void ResetPos()
     {
