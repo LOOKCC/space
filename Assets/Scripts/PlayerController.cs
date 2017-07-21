@@ -28,6 +28,7 @@ public class PlayerController : MonoBehaviour {
     private Vector3 outPos;
 
 	void Start () {
+        Debug.Log(control_in.transform.position);
         radius = control_in.transform.position.x;
 		afterMove = false;
         state = PlayerState.begin;
@@ -112,6 +113,10 @@ public class PlayerController : MonoBehaviour {
 
 	public IEnumerator Move(GameObject hero){
         Debug.Log("Into Move");
+        if (control_in == null)
+            Debug.Log(1);
+        Debug.Log(control_in.transform.position);
+        Debug.Log("2");
 		Rigidbody2D ri = hero.GetComponent<Rigidbody2D> ();
         Vector2 temp_force = Vector2.zero;
         
