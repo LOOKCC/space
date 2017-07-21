@@ -8,6 +8,14 @@ public class Control : MonoBehaviour {
     private bool can_move = false;
     private bool in_sky = false;
     public bool after_move = false;
+    public bool for_move = false;
+    public bool for_atttack = false;
+    public bool can_attack = true;
+    public bool can_layeggs = false;
+
+
+    private  Player_controller player;
+    private  AIconrtoller enemy;
 
     public GameObject control_in; 
     public GameObject control_out;
@@ -20,6 +28,7 @@ public class Control : MonoBehaviour {
     private GameObject[] balls = new GameObject[20];
 	// Use this for initialization
 	void Start () {
+        player = GameObject.FindGameObjectWithTag("PlayerController").GetComponent<Player_controller>();
         radious = control_in.transform.position.x;
         for(int i = 0; i < balls.Length; i++){ 
             balls[i] = Instantiate(ball) as GameObject;
@@ -61,13 +70,22 @@ public class Control : MonoBehaviour {
         //松开鼠标 获取力的大小
         if (Input.GetMouseButtonUp (0)&&can_move ==true ) {
             can_move = false;
+            if (for_move){
+                after_move = true;
+                player.state = Player_controller.player_state.begin;
+            }
+            if (for_atttack){
+                player.state = Player_controller.player_state.nothing;
+            }
             control_out.transform.position = control_in.transform.position;
             temp_force = control_in.transform.position;
             temp_force = temp_force - end_position;
+            for_move = false;
+            for_atttack = false;
         }
         ri.AddForce (temp_force, ForceMode2D.Impulse);
     }
-    void cannon(GameObject person,GameObject Cannon , GameObject CannonBomb){
+    public void cannon(GameObject person,GameObject Cannon , GameObject CannonBomb){
         if (Input.GetMouseButtonDown (0) && Vector2.Distance (Input.mousePosition, control_in.transform.position) < 25.0f) {
             can_move = true;
         }
@@ -81,14 +99,17 @@ public class Control : MonoBehaviour {
         //松开鼠标 获取力的大小
         if (Input.GetMouseButtonUp (0)&& can_move ) {
             can_move = false;
-            //float temp = control_out.transform.position.y - 50.0f;
+            if (for_atttack){
+                player.state = Player_controller.player_state.nothing;
+            }
             control_out.transform.position = control_in.transform.position;
             GameObject bomb = Instantiate (CannonBomb, Cannon.transform.position, Quaternion.identity);
             Rigidbody2D ri_bomb = bomb.GetComponent<Rigidbody2D> ();
             ri_bomb.AddForce (new Vector2 (50.0f, 0), ForceMode2D.Impulse);
+            for_atttack = false;
         }
     }
-    void movevbomb(GameObject person, GameObject MoveBomb){
+    public void movevbomb(GameObject person, GameObject MoveBomb){
         if (in_sky == false)
         {
             Rigidbody2D ri = MoveBomb.GetComponent<Rigidbody2D>();
@@ -147,7 +168,11 @@ public class Control : MonoBehaviour {
             //松开鼠标 获取力的大小
             if (Input.GetMouseButtonUp (0)&& can_move ) {
                 can_move = false;
+                if (for_atttack){
+                    player.state = Player_controller.player_state.nothing;
+                }
                 control_out.transform.position = control_in.transform.position;
+                for_atttack = false;
             }
         }
     }

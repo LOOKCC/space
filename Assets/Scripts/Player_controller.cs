@@ -11,6 +11,8 @@ public class Player_controller : MonoBehaviour {
     private weapon weapons;
     private Control control;
     private GameObject[] peoples = new GameObject[10];
+    //for test
+    int a = 1;
 
 	void Start () {
         controller = GameObject.FindGameObjectWithTag("GameController").GetComponent<Game_controller>();
@@ -20,54 +22,46 @@ public class Player_controller : MonoBehaviour {
         peoples = people.GetPeople();
 		state = player_state.begin; 
 	}
-    public bool wait = false;
 	
-	// Update is called once per frame
 	void Update () {
 		if (controller.State == Game_controller.Game_State.Game_Player) {
             changestate ();
 		}
 	}
+
 	void changestate(){
 		switch(state){
             case (player_state.begin):
-            
-			/*
-			if(after_move == false){
-				if(receive nothing){
+            if(control.after_move == false){
+				if(a == 0){
 					state = player_state.nothing;
 				}
-				elseif(receve){
+				else if(a == 1){
 					state = player_state.move;
-				}else(  attack){
+				}else if( a == 2){
 					state = player_state.attack;
 				}
 			}
-			if (after_move == true){
-				if(receive nothing){
+            if (control.after_move == true){
+				if( a == 0){
 					state = player_state.nothing;
-				}else(  attack){
+                }else if( a== 2){
 					state = player_state.attack;
 				}
 			}
-               */         
 			break;
-
             case (player_state.move):
-                move(objs[0]);
-                control.after_move = true;
-			    state = player_state.begin;
+                control.for_move = true;
+                control.addforce_all(peoples[0]);
+
 			    break;
             case (player_state.attack):
-                //Debug.Log("case");
-                attack(1, objs[0]);
-                state = player_state.nothing;
-                Debug.Log(state);
-               // wait = true;
+                control.for_atttack = true;
+                attack(1, peoples[0]);
 			    break;
             case (player_state.nothing):
-                Debug.Log("hh");
-			   // controller.State = Game_controller.Game_State.Game_Enemy;
+                controller.State = Game_controller.Game_State.Game_Enemy;
+                control.can_attack = true;
 			    state = player_state.begin;
                 control.after_move = false;
 			    break;
@@ -79,35 +73,34 @@ public class Player_controller : MonoBehaviour {
         switch (NO)
         {
             case (0):
-//                Debug.Log("here");
-                SendMessage("small_bomb", person);
+                weapons.small_bomb(person);
                 break;
             case (1):
-                SendMessage("big_bomb", person);
+                weapons.big_bomb(person);
                 break;
             case (2):
-                SendMessage("move_bomb", person);
+                weapons.move_bomb(person);
                 break;
             case (3):
-                SendMessage("time_bomb", person);
+                weapons.time_bomb(person);
                 break;
             case(4):
-                SendMessage("lightning");
+                weapons.lightning();
                 break;
             case(5):
-                SendMessage("tsunami");
+                weapons.tsunami();
                 break;
             case(6):
-                SendMessage("box");
+                weapons.box();
                 break;
             case(7):
-                SendMessage("drum");
+                weapons.drum();
                 break;
             case(8):
-                SendMessage("bird_egg");
+                weapons.bird_egg();
                 break;
             case(9):
-                SendMessage("cannon", person);
+                weapons.cannon(person);
                 break;
         }
     }
