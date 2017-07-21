@@ -27,7 +27,7 @@ public class Game_controller : MonoBehaviour {
 				//
 				break;
 			case Game_State.Game_Player:
-				//
+				
 			break;
 			case Game_State.Game_Enemy:
 				//
