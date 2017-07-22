@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class People : MonoBehaviour {
 
-    public static People instance = new People();
+    //public static People instance = new People();
     private static GameObject[] people = new GameObject[10];// 人的数组
     private static float[] distances = new float[10]; // 距离的静态数组
     private static HPController[] HPs = new HPController[10];  // 血量数组

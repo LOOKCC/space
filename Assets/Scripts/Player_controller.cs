@@ -12,7 +12,7 @@ public class Player_controller : MonoBehaviour {
     private Control control;
     private GameObject[] peoples = new GameObject[10];
     //for test
-    int a = 1;
+    public int a = 1;
 
 	void Start () {
         controller = GameObject.FindGameObjectWithTag("GameController").GetComponent<Game_controller>();
@@ -24,12 +24,9 @@ public class Player_controller : MonoBehaviour {
 	}
 	
 	void Update () {
-		if (controller.State == Game_controller.Game_State.Game_Player) {
-            changestate ();
-		}
 	}
 
-	void changestate(){
+    public void changestate(){
 		switch(state){
             case (player_state.begin):
             if(control.after_move == false){
@@ -53,14 +50,18 @@ public class Player_controller : MonoBehaviour {
             case (player_state.move):
                 control.for_move = true;
                 control.addforce_all(peoples[0]);
-
 			    break;
             case (player_state.attack):
                 control.for_atttack = true;
-                attack(1, peoples[0]);
+                attack(0, peoples[0]);
 			    break;
             case (player_state.nothing):
-                controller.State = Game_controller.Game_State.Game_Enemy;
+                Debug.Log("here");
+                float x = Random.value;
+                if (x > 0.5)
+                    controller.State = Game_controller.Game_State.Game_Enemy;
+                else
+                    controller.State = Game_controller.Game_State.Game_Supply;
                 control.can_attack = true;
 			    state = player_state.begin;
                 control.after_move = false;

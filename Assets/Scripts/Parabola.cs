@@ -84,11 +84,20 @@ public class Parabola : MonoBehaviour {
             //Debug.Log (a);
             for (int i = 0; i < rec_number; i++)
             { 
-                Debug.Log(a);
+                //Debug.Log(a);
                 if (exam_rec(parabola(V1, V2, a), barrier[i]))
                 {
-                    Debug.Log(a);
-                    return parabola(V1, V2, a);
+                    float x = V2.x;
+                    //Debug.Log(" jjd");
+
+                    while(x < V1.x){
+                        Vector3 temp = new Vector3 (x, 0, 0);
+                        temp.y = parabola(V1, V2, a).x * x * x + parabola(V1, V2, a).y * x + parabola(V1, V2, a).z; 
+                        GameObject bollobj = Instantiate (ball, temp, Quaternion.identity);
+                        x += 0.1f;
+                    }
+
+                    return parabola(V1, V2, a); 
                 }
             }
             a -= 0.1f;

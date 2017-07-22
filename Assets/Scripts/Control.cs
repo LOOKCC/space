@@ -70,11 +70,15 @@ public class Control : MonoBehaviour {
         //松开鼠标 获取力的大小
         if (Input.GetMouseButtonUp (0)&&can_move ==true ) {
             can_move = false;
+            destory_ball();
             if (for_move){
                 after_move = true;
+                player.a = 2;
                 player.state = Player_controller.player_state.begin;
             }
             if (for_atttack){
+                //can_attack = false;
+                //for_atttack = false;
                 player.state = Player_controller.player_state.nothing;
             }
             control_out.transform.position = control_in.transform.position;
@@ -93,8 +97,7 @@ public class Control : MonoBehaviour {
             end_position = new Vector2 (50.0f, 0.0f);
             end_position.y = clamp (Input.mousePosition.y, 25.0f, 75.0f);
             control_out.transform.position = end_position;
-            Cannon.transform.position = new Vector3 (person
-                .transform.position.x, person.transform.position.y + (control_out.transform.position.y - 50.0f) / 10, 0);
+            Cannon.transform.position = new Vector3 (person.transform.position.x, person.transform.position.y + (control_out.transform.position.y - 50.0f) / 10, 0);
         }
         //松开鼠标 获取力的大小
         if (Input.GetMouseButtonUp (0)&& can_move ) {
@@ -145,6 +148,7 @@ public class Control : MonoBehaviour {
             if (Input.GetMouseButtonUp(0) && can_move == true)
             {
                 can_move = false;
+                destory_ball();
                 in_sky = true;
                 control_out.transform.position = control_in.transform.position;
                 temp_force = control_in.transform.position;
@@ -183,17 +187,20 @@ public class Control : MonoBehaviour {
         Vector2 ball_force;
         ball_force.x = control_out.transform.position.x - control_in.transform.position.x;
         ball_force.y = control_out.transform.position.y - control_in.transform.position.y;
-        //ball_ri.AddForce (-ball_force * 20, ForceMode2D.Impulse);
-        //for(int i = 0 ;i < 20; i++){
-        //    GameObject ball_temp = Instantiate (ball, fx(-ball_force*0.7f,0.05f*i,hero), Quaternion.identity) as GameObject;
-        //    Destroy (ball_temp, 0.05f);
-        //}
-        for(int i = 0; i < balls.Length; i++)
-            balls[i].transform.position = (Vector2)fx(-ball_force * 0.7f, 0.05f * i, person);
-        Thread.Sleep(20);
         for (int i = 0; i < balls.Length; i++)
-            balls[i].SetActive(false);
+        {
+            balls[i].SetActive(true);
+            balls[i].transform.position = (Vector2)fx(-ball_force *1.1f, 0.05f * i, person);
+           
+        }
+
     }
+    void destory_ball(){
+        for (int i = 0; i < balls.Length; i++)
+           balls[i].SetActive(false);
+    }
+
+
     //计算平抛运动的轨迹 y=vt+1/2at^2
     Vector2 fx(Vector2 speed, float time ,GameObject hero){
         Vector2 ret = new Vector2 (0, 0);

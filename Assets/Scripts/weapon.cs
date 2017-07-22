@@ -128,12 +128,10 @@ public class weapon : MonoBehaviour {
         if(control.can_attack == true){
             SmallBomb.SetActive(true);
             SmallBomb.transform.position = person.transform.position;
-            control.addforce_all(SmallBomb);
-            if (control.for_atttack)
-                player.state = Player_controller.player_state.nothing;
-            control.for_atttack = false;
         }
         control.can_attack = false;
+        control.addforce_all(SmallBomb);
+            
 	}
     public void big_bomb(GameObject person){
         if(control.can_attack == true){
