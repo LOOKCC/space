@@ -180,8 +180,6 @@ public class weapon : MonoBehaviour {
             GameObject Tsunami_obj = Instantiate(Tsunami, new Vector3(-17, -5, 0), Quaternion.identity);
             Rigidbody2D Tsunami_ri = Tsunami_obj.GetComponent<Rigidbody2D>();
             Tsunami_ri.velocity = new Vector2(15, 0);
-            if (Tsunami_obj.transform.position.x > 17)
-                Destroy(Tsunami_obj);
             if (control.for_atttack)
                 player.state = Player_controller.player_state.nothing;
             control.for_atttack = false;

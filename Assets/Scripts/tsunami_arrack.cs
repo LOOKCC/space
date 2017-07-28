@@ -32,6 +32,8 @@ public class tsunami_arrack : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        if (gameObject.transform.position.x > 17.0f)
+            Destroy(gameObject);
 		
 	}
 	void dehealth(){

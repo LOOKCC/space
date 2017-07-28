@@ -42,6 +42,24 @@ public class AIconrtoller : MonoBehaviour {
         for (int i = 0; i < 6; i++)
             value[i] = 0.0f;
     }
+    void Update(){
+        if (weapons.Bird.activeInHierarchy == true)
+        {
+            if (around(weapons.Bird,peoples[0]) ||around(weapons.Bird,peoples[1]) ||around(weapons.Bird,peoples[2]) ||around(weapons.Bird,peoples[3])||around(weapons.Bird,peoples[4])  )
+            {
+                GameObject egg_obj = Instantiate(weapons.Egg) as GameObject;
+                egg_obj.transform.position = weapons.Bird.transform.position;
+            }
+            if (weapons.Bird.transform.position.x > 17.0f)
+                weapons.Bird.SetActive(false);
+        }
+    }
+    bool around(GameObject a,GameObject b){
+        if (a.transform.position.x > b.transform.position.x - 0.08f && a.transform.position.x < b.transform.position.x + 0.08f)
+            return true;
+        else
+            return false;
+    }
     public void change_state(){
         int player_and_enemy = find_to_attack();
         behavior_tree(peoples[player_and_enemy / 10], peoples[player_and_enemy % 10]);
@@ -141,48 +159,169 @@ public class AIconrtoller : MonoBehaviour {
                 total += weapon_value_now [j];
             value [i] = total;
         }
-       // if(weapons_canuse[0] > 0 && canshu >= value[0]/total_value && canshu < (value[0]+weapon_value_now[0])/total_value){
-            weapons.SmallBomb.SetActive(true);
-            //weapons.SmallBomb.transform.position = me.transform.position;
-        time += Time.deltaTime*5;
-        //Debug.Log(time);
-
-        if(me.transform.position.x < aim.transform.position.x){
-            pos.x = me.transform.position.x + time;
-            Vector3 temp = find_ways(me, aim);
-            pos.y = temp.x * pos.x * pos.x + temp.y * pos.x + temp.z;
-            weapons.SmallBomb.transform.position = pos;
-            //if(weapons.SmallBomb.transform.position.x > aim.transform.position.x 
-        }
-
-        if(me.transform.position.x > aim.transform.position.x){
-            pos.x = me.transform.position.x - time;
-            Vector3 temp = find_ways(me, aim);
-            pos.y = temp.x * pos.x * pos.x + temp.y * pos.x + temp.z;
-            weapons.SmallBomb.transform.position = pos;
-        }
-           // controller.State = Game_controller.Game_State.Game_Bagin;
-            return ;
-       // }
         /*
+        if(weapons_canuse[0] > 0 && canshu >= value[0]/total_value && canshu < (value[0]+weapon_value_now[0])/total_value){
+            weapons.SmallBomb.SetActive(true);
+            time += Time.deltaTime*5;
+            if(me.transform.position.x <= aim.transform.position.x){
+                pos.x = me.transform.position.x + time;
+                Vector3 temp = find_ways(me, aim);
+                pos.y = temp.x * pos.x * pos.x + temp.y * pos.x + temp.z;
+                weapons.SmallBomb.transform.position = pos;
+                if (weapons.SmallBomb.transform.position.x >= aim.transform.position.x - 0.1f)
+                { 
+                    controller.State = Game_controller.Game_State.Game_Bagin;
+                    time = 0.0f;
+                    return;
+                }
+            }
+            if(me.transform.position.x >= aim.transform.position.x){
+                pos.x = me.transform.position.x - time;
+                Vector3 temp = find_ways(me, aim);
+                pos.y = temp.x * pos.x * pos.x + temp.y * pos.x + temp.z;
+                weapons.SmallBomb.transform.position = pos;
+                if (weapons.SmallBomb.transform.position.x <= aim.transform.position.x )
+                { 
+                    controller.State = Game_controller.Game_State.Game_Bagin;
+                    time = 0.0f;
+                    return;
+                }
+            }
+        }
+
+        
         if(weapons_canuse[1] > 0&& canshu >= value[1]/total_value && canshu < (value[2]+weapon_value_now[1])/total_value){
-            // use this weapon
-            return ;
+            weapons.BigBomb.SetActive(true);
+            time += Time.deltaTime*5;
+            if(me.transform.position.x <= aim.transform.position.x){
+                pos.x = me.transform.position.x + time;
+                Vector3 temp = find_ways(me, aim);
+                pos.y = temp.x * pos.x * pos.x + temp.y * pos.x + temp.z;
+                weapons.BigBomb.transform.position = pos;
+                if (weapons.BigBomb.transform.position.x >= aim.transform.position.x - 0.1f)
+                { 
+                    controller.State = Game_controller.Game_State.Game_Bagin;
+                    time = 0.0f;
+                    return;
+                }
+            }
+            if(me.transform.position.x >= aim.transform.position.x){
+                pos.x = me.transform.position.x - time;
+                Vector3 temp = find_ways(me, aim);
+                pos.y = temp.x * pos.x * pos.x + temp.y * pos.x + temp.z;
+                weapons.BigBomb.transform.position = pos;
+                if (weapons.BigBomb.transform.position.x <= aim.transform.position.x )
+                { 
+                    controller.State = Game_controller.Game_State.Game_Bagin;
+                    time = 0.0f;
+                    return;
+                }
+            }
         }
         if(weapons_canuse[2] > 0 && canshu >= value[2]/total_value && canshu < (value[2]+weapon_value_now[2])/total_value){
-            // use this weapon
-            return ;
+            weapons.TimeBomb.SetActive(true);
+            time += Time.deltaTime*5;
+            if(me.transform.position.x <= aim.transform.position.x){
+                pos.x = me.transform.position.x + time;
+                Vector3 temp = find_ways(me, aim);
+                pos.y = temp.x * pos.x * pos.x + temp.y * pos.x + temp.z;
+                weapons.TimeBomb.transform.position = pos;
+                if (weapons.TimeBomb.transform.position.x >= aim.transform.position.x - 0.1f)
+                { 
+                    controller.State = Game_controller.Game_State.Game_Bagin;
+                    time = 0.0f;
+                    return;
+                }
+            }
+            if(me.transform.position.x >= aim.transform.position.x){
+                pos.x = me.transform.position.x - time;
+                Vector3 temp = find_ways(me, aim);
+                pos.y = temp.x * pos.x * pos.x + temp.y * pos.x + temp.z;
+                weapons.TimeBomb.transform.position = pos;
+                if (weapons.TimeBomb.transform.position.x <= aim.transform.position.x )
+                { 
+                    controller.State = Game_controller.Game_State.Game_Bagin;
+                    time = 0.0f;
+                    return;
+                }
+            }
         }
+
+
+
+
         if(weapons_canuse[3] > 0&& canshu >= value[3]/total_value && canshu < (value[3]+weapon_value_now[3])/total_value) {
-            // use this weapon
+            weapons.MoveBomb.SetActive(true);
+            time += Time.deltaTime*5;
+            if(me.transform.position.x <= aim.transform.position.x){
+                pos.x = me.transform.position.x + time;
+                Vector3 temp = find_ways(me, aim);
+                pos.y = temp.x * pos.x * pos.x + temp.y * pos.x + temp.z;
+                weapons.MoveBomb.transform.position = pos;
+                if (weapons.MoveBomb.transform.position.x >= aim.transform.position.x - 0.1f)
+                { 
+                    controller.State = Game_controller.Game_State.Game_Bagin;
+                    time = 0.0f;
+                    return;
+                }
+            }
+            if(me.transform.position.x >= aim.transform.position.x){
+                pos.x = me.transform.position.x - time;
+                Vector3 temp = find_ways(me, aim);
+                pos.y = temp.x * pos.x * pos.x + temp.y * pos.x + temp.z;
+                weapons.MoveBomb.transform.position = pos;
+                if (weapons.MoveBomb.transform.position.x <= aim.transform.position.x )
+                { 
+                    controller.State = Game_controller.Game_State.Game_Bagin;
+                    time = 0.0f;
+                    return;
+                }
+            }
+        }
+        */
+        if(/*weapons_canuse[4] > 0&& canshu >= value[4]/total_value && canshu < (value[4]+weapon_value_now[4])/total_value*/true){
+            float maxy = peoples[0].transform.position.y;
+            //float[] temp = new float[5];
+            for (int i = 0; i < 5; i++)
+            {
+              //  temp[i] = peoples[i].transform.position.x;
+                if (peoples[i].transform.position.y > maxy)
+                    maxy = peoples[i].transform.position.y;
+            }
+            //List<float> playerx = new List<float>();
+            //playerx.AddRange(temp);
+            //playerx.Sort();
+            weapons.Bird.transform.position = new Vector3(-17.0f,maxy + 2.0f ,1);
+            weapons.Bird.SetActive(true);
+            Rigidbody2D ri = weapons.Bird.GetComponent<Rigidbody2D>();
+            ri.velocity = new Vector2(4, 0);
+           
+
+            controller.State = Game_controller.Game_State.Game_Bagin;
             return ;
         }
-        if(weapons_canuse[4] > 0&& canshu >= value[4]/total_value && canshu < (value[4]+weapon_value_now[4])/total_value){
-            // use this weapon
-            return ;
-        }
-        if(weapons_canuse[5] > 0&& canshu >= value[5]/total_value && canshu <= (value[5]+weapon_value_now[5])/total_value){
-            // use this weapon
+        /*
+        if(weapons_canuse[5] > 0&& canshu >= value[5]/total_value && canshu <= (value[5]+weapon_value_now[5])/total_value*){
+            weapons.Cannon.SetActive(true);
+            Vector3 pos = new Vector3(0, 0, 0);
+            pos.x = me.transform.position.x;
+            pos.y = clamp(aim.transform.position.y, me.transform.position.y - 1f, me.transform.position.y + 1f);
+            weapons.Cannon.transform.position = pos;
+            GameObject bomb = Instantiate (weapons.CannonBomb, weapons.Cannon.transform.position, Quaternion.identity);
+            Rigidbody2D ri_bomb = bomb.GetComponent<Rigidbody2D> ();
+            if (me.transform.position.x <= aim.transform.position.x)
+            {
+                ri_bomb.AddForce (new Vector2 (50.0f, 0), ForceMode2D.Impulse);
+
+            }
+            if (me.transform.position.x > aim.transform.position.x)
+            {
+                weapons.Cannon.transform.rotation = Quaternion.Euler(0, 180, 0);
+                Debug.Log(weapons.Cannon.transform.rotation.eulerAngles);
+                ri_bomb.AddForce (new Vector2 (-50.0f, 0), ForceMode2D.Impulse);
+            }
+            weapons.Cannon.SetActive(false);
+            controller.State = Game_controller.Game_State.Game_Bagin;
             return ; 
         }
         */
@@ -209,22 +348,54 @@ public class AIconrtoller : MonoBehaviour {
             //放弃
             return ;
         } else {
-            if(weapons_canuse[6]!=0 /*&& pos_above_zero()*/){
-                //海啸
-                return ;
+            if(weapons_canuse[6]!=0){
+                if (pos_above_zero() == false)
+                {
+                    controller.State = Game_controller.Game_State.Game_Bagin;
+                    return;
+                }
+                else
+                {
+                    GameObject Tsunami_obj = Instantiate(weapons.Tsunami, new Vector3(-17, -5, 0), Quaternion.identity);
+                    Rigidbody2D Tsunami_ri = Tsunami_obj.GetComponent<Rigidbody2D>();
+                    Tsunami_ri.velocity = new Vector2(15, 0);
+                }
             }
             if (weapons_canuse[5] != 0) {
-                //闪电 
-                return;
+                GameObject Lightning_obj = Instantiate(weapons.Lightning, new Vector3(aim.transform.position.x, aim.transform.position.y + 0.5f, 0), Quaternion.identity);
+                Destroy(Lightning_obj, 1.0f);
+                controller.State = Game_controller.Game_State.Game_Bagin;
+                return ;
             }
             if (weapons_canuse [6] != 0) {
-                //油桶 3
-                return;
-
+                if (me.transform.position.x <= aim.transform.position.x)
+                { 
+                    GameObject Lightning_obj = Instantiate(weapons.Drum, new Vector3(aim.transform.position.x - 1f, aim.transform.position.y, 0), Quaternion.identity);
+                    controller.State = Game_controller.Game_State.Game_Bagin;
+                    return;
+                }
+                else
+                {
+                    GameObject Lightning_obj = Instantiate(weapons.Drum, new Vector3(aim.transform.position.x + 1f, aim.transform.position.y, 0), Quaternion.identity);
+                    controller.State = Game_controller.Game_State.Game_Bagin;
+                    return;
+                }
             }
             if (weapons_canuse [2] != 0) {
-                //箱子 4
-                return;
+                    if (me.transform.position.x <= aim.transform.position.x)
+                    { 
+                        GameObject Lightning_obj = Instantiate(weapons.Box, new Vector3(aim.transform.position.x - 1f, aim.transform.position.y, 0), Quaternion.identity);
+                        controller.State = Game_controller.Game_State.Game_Bagin;
+                        return;
+                    }
+                    else
+                    {
+                        GameObject Lightning_obj = Instantiate(weapons.Box, new Vector3(aim.transform.position.x + 1f, aim.transform.position.y, 0), Quaternion.identity);
+                        controller.State = Game_controller.Game_State.Game_Bagin;
+                        return;
+                    }
+
+                
             }
             //放弃
             return ;
@@ -253,6 +424,14 @@ public class AIconrtoller : MonoBehaviour {
         Debug.Log(ret.x);
         Debug.Log(ret.y);
         return ret;
+    }
+    float clamp(float x, float min,float max){
+        if (x < min)
+            return min;
+        else if (x > max)
+            return max;
+        else
+            return x;
     }
 }
      

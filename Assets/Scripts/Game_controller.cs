@@ -14,7 +14,7 @@ public class Game_controller : MonoBehaviour {
     private Supply supply;
 	// Use this for initialization
 	void Start () {
-        State = Game_State.Game_Enemy ;
+        State = Game_State.Game_Enemy  ;
 		preState = Game_State.Game_Player;
         player = GameObject.FindGameObjectWithTag("PlayerController").GetComponent<Player_controller>();
         AI = GameObject.FindGameObjectWithTag("AIController").GetComponent<AIconrtoller>();
@@ -24,6 +24,7 @@ public class Game_controller : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         Change_State();
+        //Debug.Log(State);
 	}
 	void Change_State(){
 		switch(State){
