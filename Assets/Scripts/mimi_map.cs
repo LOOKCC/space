@@ -22,7 +22,7 @@ public class mimi_map : MonoBehaviour {
 	float frame_height;
 	// Use this for initialization
 	void Start () {
-		controler = GameObject.Find ("Game_control").GetComponent<Game_controller> ();
+        controler = GameObject.FindGameObjectWithTag("GameController").GetComponent<Game_controller> ();
 //		Debug.Log (mini_map.transform.position);
 		screen_width = Screen.width;
 		screen_height = Screen.height;

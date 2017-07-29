@@ -8,7 +8,7 @@ public class Player_controller : MonoBehaviour {
 	public  player_state state;
 	private  Game_controller controller;
     private People people;
-    private weapon weapons;
+    private Weapon weapons;
     private Control control;
     private GameObject[] peoples = new GameObject[10];
     //for test
@@ -17,7 +17,7 @@ public class Player_controller : MonoBehaviour {
 	void Start () {
         controller = GameObject.FindGameObjectWithTag("GameController").GetComponent<Game_controller>();
         people = GameObject.FindGameObjectWithTag("GameController").GetComponent<People>();
-        weapons = GameObject.FindGameObjectWithTag("GameController").GetComponent<weapon>();
+        weapons = GameObject.FindGameObjectWithTag("GameController").GetComponent<Weapon>();
         control = GameObject.FindGameObjectWithTag("GameController").GetComponent<Control>();
         peoples = people.GetPeople();
 		state = player_state.begin; 

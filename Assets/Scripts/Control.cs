@@ -15,7 +15,7 @@ public class Control : MonoBehaviour {
 
 
     private  Player_controller player;
-    private  AIconrtoller enemy;
+    private  AIConrtoller enemy;
 
     public GameObject control_in; 
     public GameObject control_out;

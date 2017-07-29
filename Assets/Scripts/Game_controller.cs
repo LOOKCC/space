@@ -10,14 +10,14 @@ public class Game_controller : MonoBehaviour {
 	public  Game_State  preState;
 
     private Player_controller player; 
-    private AIconrtoller AI;
+    private AIConrtoller AI;
     private Supply supply;
 	// Use this for initialization
 	void Start () {
         State = Game_State.Game_Enemy  ;
 		preState = Game_State.Game_Player;
         player = GameObject.FindGameObjectWithTag("PlayerController").GetComponent<Player_controller>();
-        AI = GameObject.FindGameObjectWithTag("AIController").GetComponent<AIconrtoller>();
+        AI = GameObject.FindGameObjectWithTag("AIController").GetComponent<AIConrtoller>();
         supply = GameObject.FindGameObjectWithTag("GameSupply").GetComponent<Supply>();
 	}
 	
