@@ -12,6 +12,9 @@ public class Game_controller : MonoBehaviour {
     private Player_controller player; 
     private AIConrtoller AI;
     private Supply supply;
+
+    public float SupplyProbability = 0.3f;  
+        
 	// Use this for initialization
 	void Start () {
         State = Game_State.Game_Enemy  ;
@@ -37,9 +40,11 @@ public class Game_controller : MonoBehaviour {
 			case Game_State.Game_Over:
 				break;
             case Game_State.Game_Player:
+                preState = Game_State.Game_Player;
                 player.changestate();
 			    break;
             case Game_State.Game_Enemy:
+                preState = Game_State.Game_Enemy;
                 AI.change_state();
 				break;
 			case Game_State.Game_Supply:
@@ -47,4 +52,23 @@ public class Game_controller : MonoBehaviour {
 				break;
 		}
 	}
+    public void InSupply (){
+        if(Random.value < 0.7){
+            if(preState  == Game_State.Game_Enemy)
+                State = Game_State.Game_Player;
+            else
+                State = Game_State.Game_Enemy;
+        }else
+            State = Game_State.Game_Supply;
+    }
+    public void  OutSupply(){
+        if (preState == Game_State.Game_Enemy)
+        {
+            State = Game_State.Game_Player;
+        }
+        else
+        {
+            State = Game_State.Game_Enemy;
+        }
+    }
 }
