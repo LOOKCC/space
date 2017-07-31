@@ -7,6 +7,7 @@ public class AIConrtoller : MonoBehaviour {
     private  Game_controller controller;
     private People people;
     private Weapon weapons;
+    private Supply supply;
     private GameObject[] peoples = new GameObject[10];
    
     float time = 0.0f;
@@ -28,6 +29,7 @@ public class AIConrtoller : MonoBehaviour {
     void Start () {
         controller = GameObject.FindGameObjectWithTag("GameController").GetComponent<Game_controller>();
         people = GameObject.FindGameObjectWithTag("GameController").GetComponent<People>();
+        supply = GameObject.FindGameObjectWithTag("GameSupply").GetComponent<Supply>();
         weapons = GameObject.FindGameObjectWithTag("GameController").GetComponent<Weapon>();
         peoples = people.GetPeople();
         weapon_value[0] = 6;//small
@@ -84,9 +86,10 @@ public class AIConrtoller : MonoBehaviour {
             x2 = me.transform.position.x;
         }
         //如果可以直接打中
-        if(/*有补给&&可以达到*/false){
+        if(FindSupply() != new Vector3(100,100,100)){
             //拿到补给
-            if(find_ways(me,aim, Vector3.zero) != Vector3.zero)
+            //move
+            if(find_ways(me.transform.position,FindSupply(), Vector3.zero) != Vector3.zero)
                 attack(me,aim);
             else
                 nothing(me,aim);
@@ -132,11 +135,29 @@ public class AIConrtoller : MonoBehaviour {
                 weapons_canuse[i] = 1;
         }
     }
-    Vector3 find_ways(GameObject me,GameObject aim ,Vector3 error){
-        return myparabola.exam (me.transform.position, aim.transform.position);
+    void move(GameObject aim, GameObject me)
+    {
+        time += Time.deltaTime * 5;
+        if (me.transform.position.x <= aim.transform.position.x)
+        {
+            pos.x = me.transform.position.x + time;
+            Vector3 errorx = new Vector3(error, 0, 0);
+            Vector3 temp = find_ways(me, aim, errorx);
+            pos.y = temp.x * pos.x * pos.x + temp.y * pos.x + temp.z;
+            me.transform.position = pos;
+            if (weapons.SmallBomb.transform.position.x >= aim.transform.position.x - 0.1f)
+            {
+                controller.InSupply();
+                time = 0.0f;
+                return;
+            }
+        }
     }
-    Vector3 find_ways(Vector3 me_pos, Vector3 aim_pos){
-        return myparabola.exam(me_pos, aim_pos);
+    Vector3 find_ways(GameObject me,GameObject aim ,Vector3 error){
+        return myparabola.exam (me.transform.position, aim.transform.position + error);
+    }
+    Vector3 find_ways(Vector3 me_pos, Vector3 aim_pos,Vector3 error){
+        return myparabola.exam(me_pos, aim_pos + error);
     }
     void attack(GameObject me,GameObject aim ){
         float error = 0f;
@@ -480,9 +501,10 @@ public class AIConrtoller : MonoBehaviour {
     void nothing (GameObject me,GameObject aim){
         float canshu = Random.value;
         if (canshu < 0.5f) {
-            controller.State = Game_controller.Game_State.Game_Bagin;
+            controller.InSupply();
             return ;
         } else {
+            /*
             if(weapons_canuse[6]!=0){
                 if (pos_above_zero() == false)
                 {
@@ -496,6 +518,7 @@ public class AIConrtoller : MonoBehaviour {
                     Tsunami_ri.velocity = new Vector2(15, 0);
                 }
             }
+            */
             if (weapons_canuse[5] != 0) {
                 GameObject Lightning_obj = Instantiate(weapons.Lightning, new Vector3(aim.transform.position.x, aim.transform.position.y + 0.5f, 0), Quaternion.identity);
                 Destroy(Lightning_obj, 1.0f);
@@ -517,23 +540,24 @@ public class AIConrtoller : MonoBehaviour {
                 }
             }
             if (weapons_canuse [2] != 0) {
-                    if (me.transform.position.x <= aim.transform.position.x)
-                    { 
-                        GameObject Box_obj = Instantiate(weapons.Box, new Vector3(aim.transform.position.x - 1f, aim.transform.position.y, 0), Quaternion.identity);
-                        controller.State = Game_controller.Game_State.Game_Bagin;
-                        return;
-                    }
-                    else
-                    {
-                        GameObject Box_obj = Instantiate(weapons.Box, new Vector3(aim.transform.position.x + 1f, aim.transform.position.y, 0), Quaternion.identity);
-                        controller.State = Game_controller.Game_State.Game_Bagin;
-                        return;
-                    }
-
-                
+                if (me.transform.position.x <= aim.transform.position.x)
+                { 
+                    GameObject Box_obj = Instantiate(weapons.Box, new Vector3(aim.transform.position.x - 1f, aim.transform.position.y, 0), Quaternion.identity);
+                    controller.State = Game_controller.Game_State.Game_Bagin;
+                    return;
+                }
+                else
+                {
+                    GameObject Box_obj = Instantiate(weapons.Box, new Vector3(aim.transform.position.x + 1f, aim.transform.position.y, 0), Quaternion.identity);
+                    controller.State = Game_controller.Game_State.Game_Bagin;
+                    return;
+                }
             }
-            //放弃
-            return ;
+            else
+            {
+                controller.InSupply();
+                return;
+            }
         }
     }
 
@@ -567,5 +591,18 @@ public class AIConrtoller : MonoBehaviour {
             return max;
         else
             return x;
+    }
+    Vector3 FindSupply()
+    {
+        if(supply.SupplySet.Count == 0)
+        {
+            return new Vector3(100, 100, 100);
+        }
+        else
+        {
+            Vector3[] supplyarray = new Vector3[supply.SupplySet.Count];
+            supply.SupplySet.CopyTo(supplyarray);
+            return supplyarray[0];
+        }
     }
 }

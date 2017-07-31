@@ -40,6 +40,7 @@ public class Game_controller : MonoBehaviour {
 			case Game_State.Game_Over:
 				break;
             case Game_State.Game_Player:
+                int temp =  player.ChoosePerson();
                 preState = Game_State.Game_Player;
                 player.changestate();
 			    break;

@@ -28,7 +28,7 @@ public class Weapon : MonoBehaviour {
 
     private Control control;
     private Player_controller player;
-    public Camera camera;
+   // public Camera camera;
 
     private float totaltime = 0.0f;
 
@@ -187,8 +187,8 @@ public class Weapon : MonoBehaviour {
         control.can_attack = false;
 	}
     Vector3 ScreenToWord(Vector3 screen){
-        Vector3 view = camera.ScreenToViewportPoint (screen);
-        Vector3 word = camera.ViewportToWorldPoint (view);
+        Vector3 view = Camera.main.ScreenToViewportPoint (screen);
+        Vector3 word = Camera.main.ViewportToWorldPoint (view);
         return word;
     }
 

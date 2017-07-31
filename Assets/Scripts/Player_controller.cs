@@ -88,9 +88,9 @@ public class Player_controller : MonoBehaviour {
             case(4):
                 weapons.lightning();
                 break;
-            case(5):
-                weapons.tsunami();
-                break;
+            //case(5):
+              //  weapons.tsunami();
+              //  break;
             case(6):
                 weapons.box();
                 break;
@@ -104,5 +104,24 @@ public class Player_controller : MonoBehaviour {
                 weapons.cannon(person);
                 break;
         }
+    }
+    public int ChoosePerson()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            Vector3 mouse = Input.mousePosition;
+            Ray ray = Camera.main.ScreenPointToRay(mouse);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit))
+            {
+                if(hit.transform.gameObject.tag == "player")
+                {
+                    PersonNumber number = hit.transform.gameObject.GetComponent<PersonNumber>();
+                    return number.Number;
+                }
+                
+            }
+        }
+        return 0;
     }
 }
